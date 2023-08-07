@@ -1,7 +1,7 @@
 ---
 title: "\\textsf{R} Introduction^[This document contains some material (including some chunks of code that are lifted verbatim) from Peter Haschke's *An Introduction to \\textsf{R}* and Brenton Kenkel's *An Introduction to \\textsf{R}*, under the terms of the Creative Commons Attribution license. Both of their works are available on the Star Lab website, [`http://www.rochester.edu/college/psc/thestarlab/resources`](http://www.rochester.edu/college/psc/thestarlab/resources). All errors are my own.]"
 author: "Casey Crisman-Cox"
-date: "Fall 2022 Update"
+date: "Fall 2023 Update"
 output:
   pdf_document:
     number_sections: true
@@ -45,32 +45,32 @@ Today we'll just look at installing \R\ and \R\ packages, \R\ help, and some bas
 
 To install \R\ for Windows
 
-1. Go to [`http://cran.r-project.org/`](http://cran.r-project.org/)
+1. Go to [`https://cloud.r-project.org/`](https://cloud.r-project.org/)
 2. Click on "Download \R\ for Windows"
 
-![[`http://cran.r-project.org/`](http://cran.r-project.org/)](cran1.png)
+![[`https://cloud.r-project.org/`](https://cloud.r-project.org/)](Images/cran1.png)
 
 3. Click on "base"
 
-![[`http://cran.r-project.org/bin/windows/`](http://cran.r-project.org/bin/windows/)](cran2.png)
+![[`https://cloud.r-project.org/bin/windows/`](https://cloud.r-project.org/bin/windows/)](Images/cran2.png)
 
 4.  Finally click on the big button download at the top of the page and run the file that it downloads
 
-![[`http://cran.r-project.org/bin/windows/base`](http://cran.r-project.org/bin/windows/base)](cran3.png)
+![[`https://cloud.r-project.org/bin/windows/base`](https://cloud.r-project.org/bin/windows/base)](Images/cran3.png)
 
 You how have \R\ installed on your computer.  Note the version number in the picture is old! But the process holds up.
 
 To install \R\ on a Mac is largely the same.
 
-1. Go to [`http://cran.r-project.org/`](http://cran.r-project.org/) \newpage
+1. Go to [`https://cloud.r-project.org/`](https://cloud.r-project.org/) \newpage
 
-2. Click on "Download \R\ for (Mac OS X)"
+2. Click on "Download \R\ for macOS"
 
-![[`http://cran.r-project.org/`](http://cran.r-project.org/)](cran1.png)
+![[`https://cloud.r-project.org/`](https://cloud.r-project.org/)](Images/cran1.png)
 
 3. Click on the version that matches your Mac
 
-![[`http://cran.r-project.org/bin/macosx/`](http://cran.r-project.org/bin/macosx/)](cranMAC.png)
+![[`https://cloud.r-project.org/bin/macosx/`](https://cloud.r-project.org/bin/macosx/)](Images/cranMAC.png)
 
 You how have \R\ installed on your computer. Again the pictures are old, but the process is true.
 
@@ -78,7 +78,7 @@ For Linux users you'll want to follow click on "Download \R\ for Linux" find you
 
 When you've finished installing \R\ open it up you should see something that looks like this:
 
-![\R\ Console](Rconsole.png)
+![\R\ Console](Images/Rconsole.png)
 
 
 As you can see in the picture, this version of \R\ is version 3.1.2, if we wanted more information about the type of \R\ we're running we can use the command `sessionInfo()` and we get
@@ -91,9 +91,9 @@ Since you haven't loaded any packages yet, the packages listed  are those that t
 In the above chunk I have the several packages loaded as part of making these notes, which means my output has "other attached packages" and "loaded via namespace" your output will not have that.
 \end{note}
 
-\R\ Studio is an excellent alternative to the \R\ console as it provides a nice system to edit your files while you're working on them and keep everything better organized.
-To download \R\ Studio visit \url{http://www.rstudio.com/products/rstudio/download/} and find the installer that matches your system.
-I strongly recommend the use of \R\ Studio over the regular \R\ console for ease of use and organization.
+RStudio is an excellent alternative to the \R\ console as it provides a nice system to edit your files while you're working on them and keep everything better organized.
+To download RStudio visit \url{https://posit.co/download/rstudio-desktop/} and find the installer that matches your system.
+I strongly recommend the use of RStudio over the regular \R\ console for ease of use and organization.
 
 
 ## Using \R\ as a Calculator
@@ -617,12 +617,12 @@ Searches the help files for mentions of multivariate normal.  One result that lo
 \begin{verbatim}
 MASS::mvrnorm  	Simulate from a Multivariate Normal Distribution
 \end{verbatim}
-
 Which means that there is a function in the MASS package called `mvrnorm`.
-**If neither of those works:** Google will almost certainly find you the answer you want.  Googling `How to do XYZ in R''  will almost always guide you to the right place.  There are few websites that deal with \R\ questions and the answers are almost always helpful.  Results from \url{www.stackoverflow.com} are usually very helpful and easy to follow, and results from the \R\ mailing list archives are also typically good.
-<!-- Additionally, -->
-<!-- The library has both a hard copy and 2 (identical) electronic copies of  \emph{\R\ for  Stata Users} available. -->
-<!-- If you have background with Stata, this may be a good reference. -->
+
+**If neither of those works:** 
+
+1. Google will almost certainly find you the answer you want.  Googling `How to do XYZ in R''  will almost always guide you to the right place.  There are few websites that deal with \R\ questions and the answers are almost always helpful.  Results from \url{www.stackoverflow.com} are usually very helpful and easy to follow.
+2. ChatGPT and similar AI can also be very helpful at answering your questions.
 
 ## Exercises
 
@@ -2110,16 +2110,17 @@ print(plot1.faceted)
 
 
 ## Saving Plots
-To save individual plots you can do the following
+To save individual plots (in this case into a folder called "Figures") you can do the following
 ```{r}
-ggsave(plot4, file="plot4.pdf", height=4, width=6)
+ggsave(plot4, file="Figures/plot4.pdf", height=4, width=6)
 ```
 To save either individual or pages of plots you can use pdf
 ```{r}
-pdf("plot4.pdf", height=4, width=6)
+pdf("Figures/plot4.pdf", height=4, width=6)
 plot4
 dev.off()
-pdf("FullPlots.pdf", height=10, width=15)
+
+pdf("Figures/FullPlots.pdf", height=10, width=15)
 grid.arrange(arrangeGrob(plot3, plot4, nrow=1),
              plot5,
              nrow=2)
@@ -2582,7 +2583,7 @@ Other models can be estimated by maximizing a likelihood (using \texttt{optim}) 
 While these summary plots from the last chapter are interesting on their own, the real reason you want to learn to plot is to plot regression results.  So we'll look at some data on GRE scores and admission into grad school to look at some interesting ways to represent regression results graphically.
 ```{r}
 ##Data
-GREdat <- read.csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
+GREdat <- read.csv("Datasets/binary.csv") # from https://stats.idre.ucla.edu/stat/data/
 colnames(GREdat)
 ```
 Suppose then we want to predict admission to grad school using GRE scores and the ranking of the candidate's undergraduate institution (4 pt scale). As I'm sure you can guess, that's exactly what's in the data we just read in. Our model then is
@@ -2821,7 +2822,7 @@ grNormalMLE <- function(theta, X,y){
 ## Answer to chapter 3 exercises
 ```{r}
 # Solution to problem 3.1 
-library(tidyr)
+library(dplyr)
 library(readstata13)
 library(stringr)
 library(countrycode)

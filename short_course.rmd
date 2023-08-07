@@ -1,5 +1,5 @@
 ---
-title: "\\textsf{R} Introduction^[This document contains some material (including some chunks of code that are lifted verbatim) from Peter Haschke's *An Introduction to \\textsf{R}* and Brenton Kenkel's *An Introduction to \\textsf{R}*, under the terms of the Creative Commons Attribution license. Both of their works are available on the Star Lab website, [`http://www.rochester.edu/college/psc/thestarlab/resources`](http://www.rochester.edu/college/psc/thestarlab/resources). All errors are my own.]"
+title: "One day \\textsf{R} course^[This is an abridged version of my \\textsf{R} course notes available at \\url{www.caseycrismancox.com/teaching}]"
 author: "Casey Crisman-Cox"
 date: "Fall 2023 Update"
 output:
