@@ -1,0 +1,108 @@
+
+\PassOptionsToPackage{obeyspaces, hyphens}{url}
+%\usepackage[top=1.00in,bottom=1.00in,left=1in,right=1in]{geometry}
+\usepackage{amsmath, amsfonts,amssymb, amsthm, setspace, fancyhdr, url, array, float, graphicx, color, verbatim, pdflscape}
+\usepackage{afterpage}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage{longtable}
+\usepackage[longnamesfirst, sort]{natbib}
+\usepackage{rotating, booktabs}
+\usepackage[labelfont=bf]{caption,subcaption}
+%\usepackage[colorlinks=true,anchorcolor=red,citecolor=blue,linkcolor=red,breaklinks=true]{hyperref}
+% \usepackage{mathpazo}
+\usepackage{listings}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+
+\usepackage{dcolumn}
+
+\newcolumntype{d}{D{.}{.}{-1}}
+
+\newcolumntype{,}{D{,}{,\,}{-1}}
+
+\newcommand*{\myalign}[2]{\multicolumn{1}{#1}{#2}}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+%\pagestyle{fancy}
+\addtocounter{page}{-1}
+\onehalfspacing
+
+\DeclareMathOperator*{\argmin}{\operatornamewithlimits{argmin}}
+\DeclareMathOperator*{\argmax}{\operatornamewithlimits{argmax}}
+\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\newcommand{\coxnote}[1]{%
+	\marginpar{{
+			\parbox{\marginparwidth}{%
+				\setstretch{0.5}{\textcolor{blue}{\scriptsize{#1}}}\raggedright
+			}
+	}}
+}
+\newcommand{\R}{\textsf{R}}
+\newtheoremstyle{myStyle}
+{0pt} % Space above
+{7pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{myStyle}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{fact}{Fact}
+\newtheorem{acknowledgement}{Acknowledgement}
+\newtheorem{assumption}{Assumption}
+\newtheorem{claim}{Claim}
+\newtheorem{conclusion}{Conclusion}
+\newtheorem{condition}{Condition}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{corollary}{Corollary}
+\newtheorem{atheorem}{Theorem}
+\newtheorem{result}{Result}
+\newtheorem{definition}{Definition}
+\newtheorem{property}{Property}
+\newtheorem{example}{Example}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem*{note}{Note}
+
+\newtheorem{assumptionA}{Assumption \ignorespaces}
+\renewcommand{\theassumptionA}{A\arabic{assumptionA}}
+\newtheorem{propertyA}{Property \ignorespaces}
+\renewcommand{\thepropertyA}{A\arabic{propertyA}}
+
+\newtheorem{assumptionB}{Assumption \ignorespaces}
+\renewcommand{\theassumptionB}{B\arabic{assumptionB}}
+\newtheorem{propertyB}{Property \ignorespaces}
+\renewcommand{\thepropertyB}{B\arabic{propertyB}}
+
+\newtheorem{assumptionC}{Assumption \ignorespaces}
+\renewcommand{\theassumptionC}{C\arabic{assumptionC}}
+\newtheorem{propertyC}{Property \ignorespaces}
+\renewcommand{\thepropertyC}{C\arabic{propertyC}}
+
+\newtheorem{assumptionD}{Assumption \ignorespaces}
+\renewcommand{\theassumptionD}{D\arabic{assumptionD}}
+\newtheorem{propertyD}{Property \ignorespaces}
+\renewcommand{\thepropertyD}{D\arabic{propertyD}}
+
+\newtheorem{assumptionE}{Assumption \ignorespaces}
+\renewcommand{\theassumptionE}{E\arabic{assumptionE}}
+\newtheorem{propertyE}{Property \ignorespaces}
+\renewcommand{\thepropertyE}{E\arabic{propertyE}}
+
+
+\usepackage{tikz}
+\usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+\usepackage{xcolor}
+\usepackage{colortbl} 
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{graphicx}
+ \usepackage{diagbox} 

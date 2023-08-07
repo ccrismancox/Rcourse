@@ -1,0 +1,2869 @@
+---
+title: "\\textsf{R} Introduction^[This document contains some material (including some chunks of code that are lifted verbatim) from Peter Haschke's *An Introduction to \\textsf{R}* and Brenton Kenkel's *An Introduction to \\textsf{R}*, under the terms of the Creative Commons Attribution license. Both of their works are available on the Star Lab website, [`http://www.rochester.edu/college/psc/thestarlab/resources`](http://www.rochester.edu/college/psc/thestarlab/resources). All errors are my own.]"
+author: "Casey Crisman-Cox"
+date: "Fall 2022 Update"
+output:
+  pdf_document:
+    number_sections: true
+    includes:
+      in_header: header.tex
+fontsize: 12pt
+---
+\newpage
+\tableofcontents
+\newpage 
+
+# Basics of \R
+
+## What is \R
+You've already decided to learn \R\ so I don't need to write the congratulatory paragraph that opens nearly every \R\ tutorial.
+But I will say a few nice things about \R.  Some of the things that \R\ is good at
+
+- New methods are frequently released with an \R\  package or \R\  code.
+- If new methods don't come with code you can write it yourself in \R.
+- Methods like strategic estimators are, to my knowledge, not readily available in Stata, whereas they are straight forward in \R.
+- I personally find data management easier to do in \R.
+- \R\ plots are easy on the eyes.
+
+
+## Course Aims and Structure
+At the end of course sessions you should be able to 
+
+- Install/Update \R\ and \R\ packages (1)
+- Know where to look for \R\ help (1)
+- Create simple programs and functions using \R\  (2) 
+- Use control statements to program iterative procedures (2)
+- Use \R\ to read and save data  (3)
+- Effectively use matrices (1) and data frames (3) in \R\   
+- Conduct basic statistical analysis with \R\ (5)
+- Create tables (5) and plots (4) that can be exported directly into \LaTeX 
+
+We should be able to cover all this in 4 or 5 sessions, each one lasting no more than an hour.
+Today we'll just look at installing \R\ and \R\ packages, \R\ help, and some basic operations with vectors and matrices.
+
+## Installing \R
+
+To install \R\ for Windows
+
+1. Go to [`http://cran.r-project.org/`](http://cran.r-project.org/)
+2. Click on "Download \R\ for Windows"
+
+![[`http://cran.r-project.org/`](http://cran.r-project.org/)](cran1.png)
+
+3. Click on "base"
+
+![[`http://cran.r-project.org/bin/windows/`](http://cran.r-project.org/bin/windows/)](cran2.png)
+
+4.  Finally click on the big button download at the top of the page and run the file that it downloads
+
+![[`http://cran.r-project.org/bin/windows/base`](http://cran.r-project.org/bin/windows/base)](cran3.png)
+
+You how have \R\ installed on your computer.  Note the version number in the picture is old! But the process holds up.
+
+To install \R\ on a Mac is largely the same.
+
+1. Go to [`http://cran.r-project.org/`](http://cran.r-project.org/) \newpage
+
+2. Click on "Download \R\ for (Mac OS X)"
+
+![[`http://cran.r-project.org/`](http://cran.r-project.org/)](cran1.png)
+
+3. Click on the version that matches your Mac
+
+![[`http://cran.r-project.org/bin/macosx/`](http://cran.r-project.org/bin/macosx/)](cranMAC.png)
+
+You how have \R\ installed on your computer. Again the pictures are old, but the process is true.
+
+For Linux users you'll want to follow click on "Download \R\ for Linux" find your distribution and follow the instructions.
+
+When you've finished installing \R\ open it up you should see something that looks like this:
+
+![\R\ Console](Rconsole.png)
+
+
+As you can see in the picture, this version of \R\ is version 3.1.2, if we wanted more information about the type of \R\ we're running we can use the command `sessionInfo()` and we get
+```{r}
+sessionInfo()
+```
+Which shows us the version of \R\ we're using, our operating system (actually `r with(sessionInfo()$R.version, paste0(major,".", minor))`, again pictures are old!), and the packages we currently have loaded.
+Since you haven't loaded any packages yet, the packages listed  are those that that \R\ loads automatically each time it opens (base packages).
+\begin{note}
+In the above chunk I have the several packages loaded as part of making these notes, which means my output has "other attached packages" and "loaded via namespace" your output will not have that.
+\end{note}
+
+\R\ Studio is an excellent alternative to the \R\ console as it provides a nice system to edit your files while you're working on them and keep everything better organized.
+To download \R\ Studio visit \url{http://www.rstudio.com/products/rstudio/download/} and find the installer that matches your system.
+I strongly recommend the use of \R\ Studio over the regular \R\ console for ease of use and organization.
+
+
+## Using \R\ as a Calculator
+Now that we've gone through that ordeal, let's actually use \R\ for something.
+When we open up \R\ we have the rather intimidating looking prompt staring at us.  Whenever we see
+```{r, eval=FALSE}
+>
+  ```
+  It just means that \R\ is waiting for us to give it something to do.  Let's start with something simple
+  ```{r}
+1+1
+```
+Which gives our answer and returns us to the `>`.  Now we don't have to fit everything on one line.  If we don't type a full command \R\ changes the `>` to a `>` to let us know that it needs more from us.  For example:
+```{r, tidy=FALSE, prompt=TRUE}
+2*
+3
+```
+If for some reason you get the `+` and you don't know what went wrong you can hit the escape button on your keyboard and that stops \R\ and returns you to the `>`.  Escape will terminate anything \R\ is doing and return you to the `>` prompt.
+
+All the basic operations work in \R\ so `+, -, *, /, ^` do addition, subtraction, multiplication, division, and exponents just as we would expect them to do. 
+Additionally, standard functions are available so:
+```{r}
+log(10)  #base= e
+log(10, base=10)
+exp(1)
+sin(0)
+acos(-1)
+```
+Note that `#` is how we use comments in \R.  A comment is just a remark we put with our code but don't want \R\ to evaluate.
+So after the `#` \R\ stops reading the line.
+
+
+Also, \R\ can't do the impossible so
+```{r}
+log(0)
+log(-1)
+```
+Where `-Inf` means $-\infty$ and `NaN` means "Not a Number."  
+Getting those is a sign that you need to reevaluate what you're doing.
+
+## Vectors and Variables
+Now we want to use \R\ for more than just a calculator (your computer already has one of those).
+So now we want to expand what we can do, the first way we'll do that is by assigning the output of our calculations to a variable.
+In \R, an assignment can take many forms, and all of the following are the same.
+```{r}
+x <- exp(1)
+x = exp(1)
+exp(1) -> x
+assign('x', exp(1))
+```
+For the most part, you'll only ever see the first two, and most \R\ users prefer the `<-`.
+Once a value is assigned to variable we can use `x` like any other number and so
+```{r}
+x
+x-2
+log(x)
+```
+If we want to assign a new value to `x`  we just use the arrow again
+```{r}
+x <- exp(2)
+x
+```
+
+### Naming Variables
+We can name variables anything. Within code it is often better to use descriptive names.  The only rules about naming  variable is that it can't start with a number or contain any symbols except for periods and underscores.
+```{r, tidy=FALSE, error=TRUE}
+n <- 50 #Good but not descriptive
+numberOfStates <- 50 #Good and descriptive
+number.of.states <- 50 #Still good
+number_of_states <- 50 #Still good
+number-of-states <- 50 #Not good
+```
+As you can see the last one returned an error.
+Using dashes made \R\ think we wanted to subtract the variable `number` minus the variable `of` minus the variable `students`.
+If these variables had existed we would have gotten a different error because \R\ would think we wanted to assign the value 10 to this difference, which it would say is nonsense.
+
+Notice that all of our output began with the symbol `[1]`, for example
+```{r}
+2+2
+```
+The `[1]` just means that \R\ thinks of this as a vector and the the `[1]` just tells you that the value next to it is the first number in the vector.
+There's no reason why a variable in \R\ has to have only one value.  The simplest way to create vector is with the `c()` function.
+For example
+```{r}
+x1 <- c(1, 2, 3, 4)
+x1
+```
+Notice that the `[1]` is still there to tell us that the number next to it is the first value in the vector.
+The `c` in this function just stands for "concatenate" and it can  be used to bring lots of vectors  together
+```{r}
+x2 <- c(1, 0, -1, 1)
+c(x2, x2, x2, x1, x1, x1, x2, x2, x1, x1)
+```
+Where we can now see that whenever the output goes onto a second line we get a new indicator to tell us what position it is.
+So in the above we have `[1]` at the beginning of the output and then `[26]` to tell us the value that starts the second line is the 26th value in the vector.
+
+Nearly all the functions we looked at before work on vectors.  For instance
+```{r}
+x1+x2
+x1/x2
+log(x1)
+```
+And there are some nice functions to describe vectors.
+```{r}
+sum(x1)
+prod(x1)
+mean(x1)
+median(x1)
+sd(x1)
+```
+We can also sort the values within a vector
+```{r}
+sort(x1)
+sort(x1, decreasing=TRUE)
+length(x1)
+```
+
+### Easier ways to Create Vectors
+
+If we want to create a vector that follows a pattern, we don't need to take the time to type it in.
+For instance if we just want all the numbers between 1 and 15 in a vector we can use the colon.
+```{r}
+1:15
+5:2
+```
+Notice that \R\  reads the second one as a sequence from 5 to 2, and so it goes in decreasing order.  The more general version of the colon is the `seq()` command
+```{r}
+seq(0, 20)
+seq(0, 20, by=2)
+seq(0, 20, length.out=5)
+```
+Finally  the `rep` command allows you to repeat numbers
+```{r}
+rep(10, 2)
+rep(x1, 3)
+rep(x1, each=3) #Repeats each number within x1 one at a time
+```
+
+### Indexing
+Let's say we want to extract or replace a single number within a vector. In these cases we use the square brackets, for example
+```{r}
+z <- seq(0, 6, by =2)
+z[3] #3rd entry
+z[1:3] #1st three entries
+z[c(1, 3)] #Entries 1 and 3, note that we need c()
+z[-c(1,3)] #Everything but 1 and 3
+```
+
+We can also extract based on a pattern using logical operators.  Let's say we only want elements of `z` that are greater than 10. The logical statement is
+```{r}
+z > 3 
+```
+Which returns a vector of `TRUE` and `FALSE` values to show if a particular element in `z` meets the condition we gave it.  Now in order to use that to get the elements we want do the following:
+```{r}
+z[z>3]
+```
+The  list of commonly used logical operators  is shown in table \ref{LO}
+\begin{table}[H]
+\centering
+\caption{Logical operators}
+\label{LO}
+\begin{tabular}{cl}
+Operator  	& Meaning\\ \hline
+\texttt{<}				 		& less than\\
+\texttt{<=}					& less than or equal to\\
+\texttt{>}						& greater than\\
+\texttt{>=}					& greater than or equal to \\
+\texttt{==}					& equal \\
+\texttt{!=}						& Not equal\\
+\texttt{!	}						& Not\\ \hline
+\end{tabular}
+\end{table}
+Logical conditions can be strung together use `&` (and) and `|` (or)
+```{r}
+z > 3 & z< 5
+z[z > 3 & z < 5]
+z[z < 3 | z > 5]
+```
+### Removing Objects
+We use the `ls()` command to view all the objects that we've created
+```{r}
+ls()
+```
+Now lets say we wanted to get rid of some things.  For this we use the `rm()` command, but be careful, there's no undo for this.
+```{r}
+rm(list='number.of.states')
+ls()
+rm(list=c('x1', 'y2')) #We can delete more than one thing at time.
+ls()
+rm(list=ls()) #We can delete everything
+ls()
+```
+It's worth noting at this point that a vector doesn't have to be numbers it could be
+```{r}
+x <- c('cat', 'dog', 'horse')
+```
+Until we get more into data analysis there isn't a whole lot of reason to get into strings.
+I will note that the `stringr` package contains many good tools for manipulating string variables should you find yourself needing to do that.
+
+## Matrices
+A matrix is just a 2 dimensional version of the vector.  To create a matrix you just need a vector of values and then tell \R\ one of the dimensions
+```{r}
+x <- 1:10
+matrix(x, nrow=2)
+matrix(x, ncol=2)
+```
+Notice that \R\ fills in the numbers column-wise, but we can also fill in row wise
+```{r}
+matrix(x, ncol=2, byrow=TRUE)
+```
+We can also use `cbind` and `rbind` to "bind"  vectors together to make a matrix, bind a vector(s) to a matrix, or bind matrices together
+```{r}
+x2 <- -10:-1
+cbind(x, x2)
+rbind(x, x2)
+z <- 1:5
+cbind(x, x2, z)
+```
+Notice that there's no limit to the number of things we can bind together in one use of `cbind`.
+
+The `diag` command has a few different uses.
+```{r}
+diag(4) # 4 x 4 identity matrix
+diag(x) #A square matrix with diagonal = x
+Z <- matrix(1:9, nrow = 3)
+Z
+diag(Z) #Extract the diagonal of a square matrix
+```
+
+If for some reason you wanted to turn a matrix into vector there are few ways to do that
+```{r}
+c(Z)
+as.vector(Z)
+```
+if you have any doubts about whether something is a vector you can always check its class
+```{r}
+class(x)
+class(Z)
+```
+
+### Matrix Attributes
+Just like with vectors we can use the square brackets to extract elements.  For a matrix `X`, the command `X[i, j]` gives you the element from row `i`, column `j`.
+```{r}
+X <- matrix(1:12, nrow=3)
+X
+X[2, 4]
+```
+As before we can replace individual elements
+```{r}
+X[3,2]<-8
+X
+```
+We can also extract whole rows and columns
+```{r}
+X[1, ]  #First row
+X[, 2]  #Second Column
+X[1:2,] ##First two columns
+```
+Notice that when we pull out just one row or column \R\ converts it into a vector, we can use the `drop` argument to stop that
+```{r}
+X[1, ,drop=FALSE]
+class(X[1, ,drop=FALSE])
+```
+As before we can use the logical operators
+```{r}
+X[, 2] == 8 # which rows have 8 in the second column?
+X[X[, 2] == 8, ]
+```
+For the most part \R\ treats matrices as just vectors that are written differently, this means that if we ask \R\ for things like length, mean, and standard deviation it gives it to us for all the values.
+```{r}
+length(X)
+mean(X)
+sd(X)
+```
+Some things will work on directly on matrices, such finding the shape
+```{r}
+dim(X) #dimensions of X
+nrow(X) #rows of X
+ncol(X) #columns of X
+```
+But what if we wanted means by column?
+This takes us to our first introduction of the `for` loop and the `apply` function.
+We will cover them in greater detail later but for now let's start with `for` loop.
+```{r}
+mean.x <- rep(0, ncol(X)) #Recall that this creates a vector of 0s
+#equal to the length of ncol(X)
+for(i in 1:ncol(X)){
+  mean.x[i] <-  mean(X[,i])  #What does this do?
+}
+mean.x
+
+apply(X, 2, mean) # Same thing
+
+colMeans(X) #Best way to do this!
+```
+Notice that both of the loop and `apply` do the same thing, but that apply is much easier to write. So let's break down what these things do. Before we even ran the `for` loop we created a vector in which to store the results.
+We filled the vector with 0s but we really could have filled them with anything.
+I like using 0s because it makes it easy to spot if something goes wrong.
+Zeros are also better than missing values `NA` because they don't involve changing types (non-number to number) as you fill in the vector.
+The second thing we did was start the loop the line `for(i in 1:ncol(X))`  just tells \R\ that we're going to use a variable `i` that takes the values `1, 2, ..., ncol(X)`, and once `i` takes the last value in that sequence the loop is done.
+The curly brackets tell \R\ the extent of the loop.
+
+The `apply` function on the other hand takes 3 arguments.  
+The first is a matrix, in this case `X`. 
+The second is a direction, 2 means that we want \R\ to apply the function over columns, 1 would mean we wanted to apply it over rows.  
+The last argument is a function, in example we just used means, but it could be any function, including one you write yourself once we get to writing functions.
+
+Finally, for this specific example there is a built in function `colMeans` (and `rowMeans`) that is faster than either `for` or `apply`, but that won't be the case for every operation you want to do.
+
+
+Note that one thing we can do with matrices that we can't do with vectors is name the rows and the columns.  These names are just string vectors.
+```{r}
+X <- diag(2)
+colnames(X)
+colnames(X) <- c('left', 'right')
+X
+colnames(X)[2] <- 'Right'
+X
+row.names(X) <- c('up', 'down')
+X
+
+X[,'left']  ## We can use the names in place of numbers to index
+X['up', 'left']
+```
+
+### Matrix Operations
+Matrix math in  \R\ includes  standard operations including arithmetic.
+```{r}
+X <-  matrix(1:4, nrow=2)
+Y <- diag(2) #Identity matrix
+X + Y
+X-Y
+```
+Note that `*` performs \emph{element-wise} multiplication.  For standard matrix multiplication use 	`%*%`
+```{r}
+X*Y
+X %*% Y
+```
+If you use matrix multiplication on a vector \R\ will guess whether it is a row or column vector.  It  typically does a good job of it, but be careful.
+```{r}
+c(1, 1) %*% X
+X %*% c(1,1)
+```
+We can  transpose matrices (typically written as $X'$ or $X^T$)
+```{r}
+X
+t(X)
+```
+Matrix multiplication
+```{r}
+A = matrix(1:6, nrow=2)
+B = matrix(1:6, nrow=3)
+A %*% B  #Matrix multiplication
+```
+Matrix inversion  (typically written as $X^{-1}$) is done via the `solve` command.
+```{r}
+solve(X)
+solve(X) %*% X
+```
+Note that the `solve` command is done by numerical computation, not an analytic solution, so the results are only accurate up to something like the 16th decimal place.
+To illustrate we'll use `rnorm` to generate random numbers from the standard normal distribution. Note that we set a seed value here, that tells us which random numbers we want so we will get the same random numbers if we use the same seed. This allows for reproducible randomness.
+```{r}
+set.seed(1)
+Z <- matrix(rnorm(16), nrow = 4)
+solve(Z) %*% Z
+```
+Notice this is really close to an identity matrix, but not 	quite, we can use the `round` function to make this easier on the eyes.
+```{r}
+round(solve(Z) %*%Z, digits=12)
+```
+So close enough for almost anything we're interested in doing.
+
+
+Additional functions that may come in handy include the determinant the Cholesky decomposition
+```{r}
+Y <- matrix(c(1, 0.5, 0.5, 1), nrow=2)
+det(Y)
+chol(Y)
+t(chol(Y)) %*% chol(Y)  #make sure it worked
+```
+There's no command for the trace, but it's easy to figure it out with what we know
+```{r}
+sum(diag(Y)) #trace
+```
+We can also get eigenvalues and eigenvectors
+```{r}
+eigen(Y)
+```
+Notice that the  `eigen` output as two components designed with the `$` sign.  The `$` means that we're dealing with a list which a new type of output, to which we now turn our attention
+
+## Lists
+When \R\ returns a list to us we can extract the elements of it using the dollar sign with the appropriate name.
+The names are given by the output, in the above example the names given to us are "values" and "vectors."
+If we didn't know the names we can look using the `names` command.
+Let's make our own list and then try it 
+```{r}
+Y <- matrix(c(1, 0.5, 0.5, 1), nrow=2)
+matrixList <- list(matrix = diag(4), #Identity matrix
+                   Y = Y,
+                   nrowsY = nrow(Y))
+
+names(matrixList)
+matrixList$matrix
+matrixList$Y
+```
+Alternatively, we can still use brackets, but with lists we have to double them up to get the specific element extracted from the list. For example, compare
+```{r}
+matrixList[3]
+matrixList[[3]]
+```
+Lists are very flexible because they are way to combine matrices of different dimensions with vectors, or to put many statistical models together in one group. We can also nest lists within lists.  
+```{r}
+matrixList$sizeY <- list(rows=nrow(Y), cols=ncol(Y))
+```
+If we wanted to extract just the columns from this list we could use either the names or the square brackets.
+```{r}
+matrixList$sizeY$cols
+matrixList[[4]][[2]] #Same thing
+```
+
+Finally, we have two more forms of apply that we can use on just lists.
+The first one we'll look at is `lapply` which is read "L- Apply" and stands for list apply.
+When we use `lapply` it performs some function that we want over the entire list.
+So if we wanted to know the length of each object in a list we could do the following.
+```{r}
+lapply(matrixList, length)
+```
+Notice that `lapply` returns  a list, this can be rather cumbersome, which is why we sometimes use `sapply` instead.
+The `sapply` command does the same thing but returns the results in  vector form if possible.
+```{r}
+sapply(matrixList, length)
+```
+
+In most of the really useful applications of these functions we would have a list where all the elements were of the same class.  Let's say we have a bunch of matrices and want to know the column means of each one.
+```{r}
+matrixList <- list(matrix1 = matrix(1:9, nrow=3), 	#3 x 3
+                   matrix2 = matrix(0:5, nrow=2), 	#2 x 3
+                   matrix3 = cbind(rnorm(3), 1))   	#3 x 2
+matrixList
+lapply(matrixList, class) # make sure they're all matrices
+lapply(matrixList, dim)   # check dimensions
+lapply(matrixList, apply, 2, mean)
+```
+Notice that in the last one we used `apply` within `lapply`.
+We then just write the arguments that we would use with apply as additional arguments.
+This is something that we can generally do with functions in the apply family. For example
+```{r}
+X <- matrix(c(1, NA, 1,1), nrow=2) #Row 2 has a missing value
+mean(X[2, ])  #is NA
+mean(X[2, ], na.rm=TRUE) #Tells R to just ignore missing values
+apply(X, 1, mean) #Gives us that NA
+apply(X, 1, mean, na.rm=TRUE) #add option na.rm=TRUE
+```
+
+## Packages and Updating
+To install a  package (in this case MASS) from CRAN (99.9\% of the packages you want will be here) you just run the command
+```{r, eval=FALSE}
+install.packages('MASS')
+```
+\noindent it may ask you to pick a mirror. I usually pick one from Pennsylvania, but it really doesn't matter which one you pick.
+Once it's installed you can load it.
+```{r}
+library(MASS)
+```
+
+### Updating \R\ and \R\ Packages
+
+To update \R\ there are 3 steps
+
+1. Download the new version
+2. Install it
+3. Uninstall the old version 
+
+In most cases that's all you'll need to do. 
+
+
+To update a package just run `install.packages()` again. 
+RStudio has a button in the packages tab that says `Check for Updates' if you click this once every few months and select all you should be fine.
+
+## Getting Help
+
+This is probably the most important part of the whole course.
+If you run into a problem, which will happen often, there are two things that are almost always true:  
+
+1. Someone else has had this problem 
+2. Someone has solved it.
+
+
+**Finding out about a particular function:** The most common problems are related to particular functions that you want to know more about.  In these cases the best place to start looking is the \R\ help file.  These can be accessed using the ? command.  For instance if we wanted to know more about the arguments in `log`, say we didn't know that it was base $e$ or we didn't know how to change it we could type
+
+```{r, eval=FALSE, tidy=FALSE}
+?log
+```
+
+Which pulls up the help file.  A typical \R\ help file consists of a few sections
+
+- **Description** What is the function supposed to do?
+- **Usage** How does one typically type the command?
+- **Arguments**  What are all the arguments and what do they do?
+- **Details** Additional information about how the function works
+- **Value** What does the function return?  If the function returns a list, what are the elements of that list?
+- **See Also** Related functions that may be helpful
+- **Example** Examples of how to use the function.
+
+This is usually good enough to figure anything you want to know about a function, and running the examples at the bottom of the page can be helpful in understanding the output.
+Note that if for some reason ? doesn't work you can also use type
+```{r, eval=FALSE}
+help('%*%')
+```
+
+and it will do the same thing.
+
+**You know what you want to do, but you don't know what function to use:** In these cases the commands `??` or `help.search` are your friends.  They do a keyword search through the help files or all your packages to find what you're looking for.  For example,
+
+```{r, eval=FALSE}
+help.search("multivariate normal")
+```
+
+Searches the help files for mentions of multivariate normal.  One result that looks promising is
+
+\begin{verbatim}
+MASS::mvrnorm  	Simulate from a Multivariate Normal Distribution
+\end{verbatim}
+
+Which means that there is a function in the MASS package called `mvrnorm`.
+**If neither of those works:** Google will almost certainly find you the answer you want.  Googling `How to do XYZ in R''  will almost always guide you to the right place.  There are few websites that deal with \R\ questions and the answers are almost always helpful.  Results from \url{www.stackoverflow.com} are usually very helpful and easy to follow, and results from the \R\ mailing list archives are also typically good.
+<!-- Additionally, -->
+<!-- The library has both a hard copy and 2 (identical) electronic copies of  \emph{\R\ for  Stata Users} available. -->
+<!-- If you have background with Stata, this may be a good reference. -->
+
+## Exercises
+
+1. Look up the function `rnorm` using the `?` function.  Read about its arguments and its related functions (`pnorm`, `dnorm`, etc),  we will use it in the next problem.
+2. Do the following
+    a. Create a $1,000 \times 3$ matrix, call it `X` where the first column is all 1s, the second column contains random draws from a normal with mean 1 and standard deviation 2 (hint: look at problem 1) and the last  column contains random draws from the uniform distribution [0, 1] (use `??` or google to try and find the function for this).  Use any of the methods discussed above to create the matrix.  Look up and use the function `colMeans` to  print the column means  for each column and use `apply` to print standard deviations of each column to make sure you that you did this correctly (the standard deviation for $U[0, 1]$ will be between 0.27 and 0.30)
+    b. Create a vector `b` equal to (-1, 2, 2).  Then change the second value to -2.
+    c. Use matrix multiplication to generate `y` such that $y = Xb +e$ where $e$ is a vector of length 1,000 and is distributed normal (0, 1).
+
+3. Download the following packages:
+    - `readstata13`
+    - `data.table`
+    - `MASS`
+    - `tidyr`
+    - `dplyr`
+    - `ggplot2`
+    - `gridExtra`
+    - `lmtest`
+    - `car`
+    - `sandwich`
+    - `plm`
+    - `stargazer`
+    - `xtable`
+    
+
+
+
+
+# Control Statements and Programming
+This chapter really takes us into the meat of \R\ programming.
+In particular we will cover the basics of `for` and `while` loops and if-else commands.
+
+
+
+## If and Else
+When we want to use logical conditions we can use `if` and `else` as separate commands.  They have the following setup:
+\begin{verbatim}
+if(LOGICAL){
+  COMMAND1
+  COMMAND2
+}else{
+  COMMAND
+}
+\end{verbatim}
+Notice the use of `{}` to contain the conditions.
+While you sometimes find code that does not use these (you don't need them for one line statements), I *strongly* encourage you to always be explicit and use them as much as possible.
+This makes your code less prone to breaking and much more readable to you, others, and, perhaps most importantly, your future selves.
+
+Let's look at an example of a trivial if statement.
+```{r}
+y <- FALSE
+if(y){
+  cat("Hello World")
+}else{
+  cat("Goodbye")
+}
+```
+
+We can also nest if statements.  Try  the following:  Generate a value of `test` and predict which name will be printed.
+Make sure you understand why a given name is being displayed.
+```{r}
+test <- runif(1)
+print(test)
+
+if(test < 1/2){
+  if(test < 1/3){
+    "Mary"
+  }else{
+    if(test < 0.4){
+      "Frank"
+    }else{
+      "Liz"
+    }
+  }
+}else{
+  "Bob"
+}
+```
+
+Sometimes if and else can be quite cumbersome, and for special cases \R\ comes with a neat `ifelse` command.
+This command takes the syntax
+\begin{verbatim}
+ifelse(LOGICAL,
+       IF TRUE: DO THIS,
+       ELSE: DO THIS)
+\end{verbatim}
+This can be used on vectors of logicals in ways that don't make sense for the if-else constructs we used above.
+Let's try it:
+```{r}
+test <- runif(10)
+print(test)
+ifelse(test < 1/2,
+       0,
+       1)
+```
+
+As with if-else constructs we can also nest them
+```{r}
+print(test)
+
+ifelse(test < 1/2,
+       ifelse(test < 1/3,
+              "Mary",
+              ifelse(test < 0.4,
+                     "Frank",
+                     "Liz")),
+       "Bob")
+```
+Were you able to predict them all correctly?
+If you did then you understand what's going on here.
+
+## Loops and breaks
+Another commonly used control structure is the loop.  We can consider a couple different loops here.
+The most basic, which we briefly saw above, is the `for` loop.
+```{r}
+y <- 1:10
+for(i in 1:10){
+  y[i] <- y[i]^2
+}
+y
+```
+We can combine it with with if statements
+```{r}
+y <- 1:10
+for(i in 1:10){
+  if(y[i] %% 2){
+    print("y is odd")
+  }else{
+    print("y is even")
+  }
+}
+```
+Use the help functions from before to figure out what `%%` means and why we can use it to find odds and evens.
+
+Let's say we didn't know how many times something needed done though, we just know when it's done.
+For that we can use 2 different structures.
+The first is the repeat structure:
+```{r}
+repeat{
+  y <- runif(1)
+  if(y< .05){
+    break
+  }
+}
+y
+```
+
+We could do this OR we could do the much easier
+
+```{r}
+#Create initial value of y that satisfies the condition
+y <- 1
+while(y>0.05){
+  y <- runif(1)
+}
+y
+```
+
+Typically we use `for` loops when we want to repeat an operation some set number of times and there is no breaking condition.
+On the other side of things, `while` loops are useful for situations where you want something to converge to within some tolerance (such as trying to maximize/minimize a function).
+
+## \*ply Functions
+
+The ply family of functions is a set of functions that are designed to make more readable.
+They typically are used in place of loops because they are less cumbersome to write (once you understand them).
+The first function we'll look at is `apply`, which is used on matrices
+```{r}
+X <- replicate(3, rnorm(10))
+apply(X, 2, sd) #take the standard deviation of each column
+apply(X, 1, max) #max of each row
+apply(X, 1, function(x){ifelse(all(x>0), # can you explain this?
+                               return(max(x)), 
+                               return(min(x)))}) 
+```
+If you're dealing with lists you may want to use `lapply`.
+```{r}
+X <- list(A = diag(1:4),
+          B = matrix(1:4, nrow=2))
+lapply(X, solve)
+lapply(X, t)
+```
+If you're dealing with lists, but you want to return a vector we have `sapply`.
+```{r}
+X <- list(A = diag(1:4),
+          B = matrix(1:4, nrow=2))
+#Look at the difference between
+sapply(X, max)
+lapply(X, max)
+```
+Other *ply functions exist, notably, `tapply` (apply a function over a group) and `mapply`, but I don't find myself using either of those very much, so we'll leave it at that.
+
+
+## Scripting
+Now that we're starting to get the hang of doing things in \R\ we're now at the point where we'll want to write them down so we can redo and replicate our work.
+Our first script will be a program that generates some data and then provides some descriptive statistics of that data.
+To create a new script file in \R\ go to `file>New script`. In RStudio go to `file>New>R Script`.  In both cases we now have a blank file.
+Save this file somewhere (remember where) as "test1.R" and then enter the following
+```{r,tidy=FALSE, eval=FALSE, prompt=FALSE}
+######Heading#####
+##File: test1.R
+##Description: First R script
+
+######Generate some data######
+dat <- rnorm(1000)  ##Creates a vector of normal draws
+
+######Create a function to summarize it######
+summarize <- function(x){  ##This creates a function that takes one
+  ##Argument, we've called x, it can be anything
+  
+  ##Make a list with summary stats
+  ans <- list(Mean = mean(x),
+              StDev = sd(x),
+              Min = min(x),
+              Median = median(x) ,
+              Max = max(x))
+  return(ans) ## Return the list we created
+} ## end the function
+summarize(dat) ##run the function on the data
+```
+Once you have that typed, re-save the file.  We can now run the file using the `source` command.    
+To do this you'll want to have your working directory set to wherever you saved the file.
+You can set your working directory using `setwd()` 
+```{r}
+getwd() ##Returns the current working directory
+setwd('~/Dropbox/Rcourse_2021update') ##Change
+getwd() ##Returns the new directory
+```
+\begin{note}
+All \R\ scripts should be written with a working directory in mind and use "relative" rather than "absolute" paths. You should also never include a `setwd` command in your scripts. When you send a script or project to someone it should be self contained in the sense that they should be able to download it and run it from whatever directory they save it to.
+\end{note}
+In my case this means that I set my working directory and then run:
+```{r}
+source('test1.R', echo=TRUE) 
+```
+Alternatively you can run individual lines  by highlight them in the file editor and press ctrl+enter.  RStudio also has a source button in built into the editor.
+We can also dispense with the full extension by changing our working directory.
+
+
+Now that we've sourced the file the variable `dat` and the function `summarize` are now in our working space. To see this
+```{r}
+ls()
+```
+Which means we can now use our `summarize` function just like any of the built in \R\ commands. For example
+```{r}
+X <- cbind(rnorm(1000), 1:1000)
+apply(X, 2, summarize)
+```
+Which we may think is too cumbersome of a result so we can collapse some of that by using the `unlist` command to collapse a list into a vector
+```{r}
+lapply( apply(X, 2, summarize), unlist)
+```
+But we really don't want to write too many functions which is why we let other people do that and then use their packages.
+
+
+
+## APPLICATION: Solving a Nonlinear System of Equations
+Consider the following battle of the sexes with Irving and Claire.
+\begin{center}
+\begin{tikzpicture}
+\draw (0,0) rectangle (12, 6);
+\draw (6,0) -- (6, 6);
+\draw (0,3) -- (12, 3);
+\draw (-1 , 4.5)  node {$M$};
+\draw (-1 , 1.5)  node {$B$};
+\draw (9, 6.5)  node {$B$};
+\draw (3, 6.5)  node {$M$};
+\draw (-2, 3)  node {$I$};
+\draw (6, 7)  node {$C$};
+\draw (3, 4.5)  node {$2,\;\; 3$};
+\draw (3, 1.5)  node {$0,\;\;0$};
+\draw (9, 1.5)  node {$3,\;\; 2$};
+\draw (9, 4.5)  node {$0,\;\; 0 $};
+\end{tikzpicture}
+\end{center}
+
+
+Further suppose each player has some action-specific private information (this induces nonlinearity and makes it a little more tricky than just a system of linear equations). We will denote this as an action specific shock for each player and action such that $\varepsilon_i(a_i)$ for $i \in \{I,C\}$.
+Let this information be iid normal with mean 0 and variance $1/2$.
+We can think of this private information as being something like Claire discovers it's free hot dog day at the monster truck rally and so she may want to go more than is known to both players or the analyst.
+Games with private information will be covered more in Game Theory, for now just take it as a condition of the exercise.
+We want to find a mixed strategy equilibrium.
+
+
+The conditional choice probabilities for this game are given by
+$$\begin{aligned}
+\Psi_I(a_I=B) &= \Pr\left[3\Pr(a_C=B) + 0(1-\Pr(a_C=B)) +\varepsilon_I(a_I=B) \right.\\
+ &\qquad\quad> \left.2(1-\Pr(a_C=B)) + 0(\Pr(a_C=B)) +\varepsilon_I(a_I=M) \right]\\
+&= \Pr[5\Pr(a_C=B)-2  >\varepsilon_I(a_I=M)-\varepsilon_I(a_I=B)]\\
+&= \Phi(5\Pr(a_C=B)-2)\\
+\Psi_C(a_C=B) &= \Pr\left[2\Pr(a_I=B) + 0(1-\Pr(a_I=B)) +\varepsilon_C(a_C=B)\right.\\
+ &\qquad\quad> \left. 3(1-\Pr(a_I=B)) + 0(\Pr(a_I=B)) +\varepsilon_C(a_C=M)+ \varepsilon_M\right]\\
+&= \Pr[5\Pr(a_I=B)-3  >\varepsilon_C(a_C=M)-\varepsilon_C(a_C=B)]\\
+&= \Phi(5\Pr(a_I=B)-3)
+\end{aligned}$$
+Where $\Phi$ is the standard normal PDF. Let's combine those into a single $\Psi$
+\[\Psi(p) = \begin{bmatrix}
+\Psi_I(a_I=B)\\
+\Psi_C(a_C=B)
+\end{bmatrix}
+\]
+An equilibrium can be described as a vector, $p=(\Pr(a_I=B),\Pr(a_C=B))$, such that
+\[\Psi(p) - p = 0.\]
+This is a nonlinear system of equations which we will solve using an iterative procedure, but before we get to the procedure let's lay the ground work and write down our $\Psi$ function.
+
+```{r}
+Psi <- function(p){
+  pI <- pnorm(5*p[2]-2)
+  pC <- pnorm(5*p[1]-3)
+  return(c(pI,pC) -p)
+}
+```
+Newton's method for nonlinear equations requires that we know the Jacobian (first derivatives) of this function $\Psi(p)-p$.
+$$\begin{aligned}
+J_p \Psi(p)-p &= J_p \begin{bmatrix}
+\Phi(5\Pr(a_C=B)-2) - \Pr(a_I=B)\\
+\Phi(5\Pr(a_I=B)-3) -\Pr(a_C=B)
+\end{bmatrix} \\
+&=\begin{bmatrix}
+-1 & 5\phi(5\Pr(a_C=B)-2) \\
+5\phi(5\Pr(a_I=B)-3)&  -1
+\end{bmatrix}
+\end{aligned}$$
+```{r}
+jac <- function(p){
+  DpI <- c(-1, 5*dnorm(5*p[1]-3))
+  DpC <- c(5*dnorm(5*p[1]-2), -1)
+  return(cbind(DpI, DpC))
+}
+```
+
+Armed with these tools we can now solve the problem.
+Newton's method for solving non-linear equations starts with an initial guess at the solution, call this $x_0$, and does the following for iteration $k=1,2,\ldots$
+\[x_{k} = x_{k-1}-\Psi(x_{k-1})\left(D_x \Psi(x_{k-1})\right)^{-1}.\]
+This procedure is iterated until $\max(|x_k-x_{k-1}|)<\varepsilon$ for some pre-specified tolerance.
+```{r}
+Newton <- function(func, jac, x0, tol=1e-5){
+  xold <- x0
+  diff <- 1
+  while(diff > tol){
+    xnew <- xold - func(xold)%*% solve(jac(xold))
+    diff <- max(abs(xnew-xold))
+    xold <- xnew
+  }
+  return(xnew)
+}
+x0 <- c(.5,.5)
+
+p.eq <- Newton(func=Psi, jac=jac, x0=x0)
+p.eq
+```
+Note that there are actually three equilibira to this game, but Newton will only ever find 1 (usually one that's near the starting values). In this equilibrium, Irving goes to the ballgame with probability 0.57 and to the monster truck rally with probability 0.43. For Claire these numbers are switched.  Play with the starting values and see if you can find another equilibrium.
+
+<!--       [,1]   [,2] -->
+<!-- [1,] 0.0233 0.0020 -->
+<!-- [2,] 0.9980 0.9767 -->
+<!-- [3,] 0.5665 0.4335 -->
+
+## APPLICATION: Least Squares by Maximum Likelihood
+As you may or may not have learned by now, OLS is also the maximum likelihood estimator $\hat{\beta}$ when $y$ is distributed normally with mean $X\beta$.
+This means that solving OLS by either maximum likelihood or by minimizing the sum of squared error should give us the estimates of $\beta$.
+To satisfy us that this is the case we will use \R\ to maximize the logged likelihood function and compare it to the traditional OLS estimates.
+
+
+First, let's generate some data
+```{r}
+set.seed(1)
+N <- 2000
+X <- cbind(1, replicate(2,rnorm(N)))
+beta <- c(-1, 2, -2)
+sigma2 <- 1
+y <- X %*% beta + rnorm(N, 0, sqrt(sigma2))
+```
+Since $y$ is distributed i.i.d. normal the joint pdf of the sample is
+\[
+f(y|X, \beta, \sigma^2) = \prod_{i=1}^N \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(\frac{-(y_i- X_i\beta)^2}{2\sigma^2}\right)
+\]
+As you should remember from math camp, this joint pdf is proportional to the likelihood function so we will just switch the order of the conditionals.
+To make things easy we often take the log of it.
+The likelihood function is thus:
+\[
+L(\beta, \sigma^2 | X, y)  = \sum_{i=1}^N -\frac{1}{2}\log(\sigma^2) -\frac{1}{2}\log(2\pi)  - \frac{1}{2\sigma^2} (y_i - X_i\beta)^2.
+\]
+As we know the $2\pi$ term is constant in $\beta$ and $\sigma^2$ so we can drop it from our likelihood routine.
+It is advisable that we reparameterize this function so that it is a function of $\beta$ and $\theta = \log(\sigma^2)$.
+The reason why we reparameterize the model was so that we can let \R\ take guesses at $\theta \in \mathbb{R}$ rather than $\sigma^2 \in \mathbb{R}_+$.
+Numerical optimizers are much easier to work with if you can find a way to let them take guesses that are not constrained.
+Our new likelihood is now
+\begin{equation}\label{linearMLE2}
+L^*(\beta, \theta | X, y)  = \sum_{i=1}^N -\frac{1}{2}\theta   - \frac{1}{2\exp(\theta)} (y_i - X_i\beta)^2.
+\end{equation}
+Now when our optimizer takes guesses at $\theta$ it can guess any real number and our estimate for  $\sigma^2$ is $\widehat{\sigma^2} = \exp(\hat{\theta})$.
+Let $\theta = (\beta, \theta)$ we can now create the likelihood function.
+```{r}
+NormalMLE <- function(theta, X, y){
+  eta <- theta[length(theta)] #extract eta from parameter vector
+  beta <- theta[-length(theta)] #beta coefficients
+  
+  Lik <- - 1/2 * eta - 1/(2*exp(eta)) * (y - X%*%beta)^2 #L* from above
+  Lik <- -sum(Lik)
+  return(Lik)
+}
+```
+Note that we waited until the end to sum up the observations.  Also note that we took the negative of the sum.  This is because most (but not all) numerical optimizers look for a minimum rather than a maximum, minimizing the negative likelihood is the same as maximizing the likelihood.
+
+It is advisable in cases of numerical optimization that we also include first derivative information on the parameters.
+The gradient takes the form
+$$\begin{aligned}
+\frac{\partial L}{\partial \beta} &= \sum_{i=1}^N \frac{X_i(y_i -X_i\beta)}{\exp(\theta)} \nonumber\\
+\frac{\partial L}{\partial \theta} &= \sum_{i=1}^N\left( \frac{(y_i -X_i\beta)^2}{2\exp(\theta)} -\frac{1}{2}\right)
+\end{aligned}$$
+and returns a vector of length equal to to the length of $\theta$.
+The actual programming will be left as an exercise for the reader but here's what the output should look like
+```{r, echo=FALSE}
+grNormalMLE <- function(theta, X,y){
+  lnsigma2 <- theta[length(theta)] #extract eta from parameter vector
+  sigma2 <- exp(lnsigma2)
+  beta <- theta[-length(theta)] #beta coefficients
+  
+  dBeta <- (X * as.numeric(y-X%*%beta))/sigma2
+  dln.sigma2 <- (y- X%*%beta)^2 / (2*sigma2) - 1/2
+  D <- colSums(cbind(dBeta, dln.sigma2))
+  return(-D)
+}
+```
+```{r}
+#Should look something like this, but your results may
+#differ based on the seed value.
+grNormalMLE(rep(0,4), X=X, y=y)
+```
+We don't really need the gradient to optimize the function it's just useful for improving accuracy, speed, and reliability.
+However, in a lot of problems it's unnecessary.
+To actually optimize the function we will use the `optim` function.
+```{r}
+##optim is a nonlinear optimizer that takes the following inputs
+#par = starting values, in our case draws from the uniform.
+#      These correspond to theta above
+#fn = function to optimize
+#gr = gradient (first derivatives)
+#method = Method to use for optimization BFGS is a quasi-Newton method
+#         that works really well on most problems
+#X, y are the extra arguements that we included in the  NormalMLE
+#     and grNormalMLE functions.
+optim(par=runif(4), fn=NormalMLE, gr=grNormalMLE, method="BFGS", X=X, y=y)
+```
+This is nice what if we wanted to standard errors though.
+`optim` doesn't have an option for that directly but it can return the Hessian.
+Do you remember how to get standard errors from the Hessian?
+```{r}
+mod1 <- optim(par=runif(4), fn=NormalMLE, method="BFGS", X=X, y=y,
+              gr=grNormalMLE, hessian=TRUE)
+
+vcov1 <- solve(mod1$hessian)
+sqrt(diag(vcov1))
+```
+Comparing these results to OLS estimates is left as an exercise to the reader.
+
+## APPLICATION: Monte Carlo on Omitted Variable Bias
+This application will use a Monte Carlo experiment to explore the effect of omitted variable bias in a linear model.
+A Monte Carlo experiment is a simulation experiment wherein we set the true values of data to see how models perform in particular circumstances.
+In this application we will be seeing how the linear model performs in cases where a relevant explanatory variable is not included.
+For each iteration of the Monte Carlo we will do the following:
+
+1. Generate data using the following data generating process:
+Draw $X_1$ and $X_2$ from the multivariate normal with mean 0, correlation $\rho$, and $\sigma^2_{1} =\sigma^2_{2}=1$. Use $\rho = (-0.5, 0, 0.5)$.
+$$y = 1 -2(X_1) +2(X_2)+\varepsilon$$
+Where $\varepsilon \sim N(0,1)$.  Create 2,000 observations in each sample.
+2. Estimate $\hat{\beta}$ using OLS of only $y$ on $X_1$.
+2. Calculate the bias by subtracting the true values of $\beta$, $(1, -2)$ from the estimated values that you get from `lm`
+3. Store this bias
+4. Repeat 1,000 times
+5. Create a list of length 3 (one for each value of $\rho$).  Within that list create a $2\times 3$ matrix where row 1 is the mean and 95\% Confidence Interval of the bias the  of $\hat{\beta}_0$, and row 2 is the same for the bias of $\hat{\beta}_1$.
+
+So what does this look like?
+```{r}
+library(MASS) #for the multivariate normal
+N <- 2000 #Sample size
+rho <- c(-0.5, 0, 0.5) #Values of rho
+beta <- c(1, -2, 2) #True betas
+MCresults <- list() #empty list
+
+for(r in 1:3){ #loop over values of rho
+  results <- matrix(0, nrow=1000, ncol=2)
+  for(i in 1:1000){
+    Sigma <- matrix(c(1, rho[r], rho[r],1), nrow=2)
+    X <- mvrnorm(N, c(0,0), Sigma)
+    y <- cbind(1, X) %*% beta + rnorm(N)
+    X1 <- cbind(1, X[,1])
+    bhat <- solve(t(X1)%*%X1)%*%t(X1)%*%y
+    bias <- beta[-3] - bhat #what's the -3 do?
+    results[i,] <- bias
+  }
+  biasOut <- cbind(colMeans(results),
+                   t(apply(results, 2, quantile,  #explain this?
+                           c(0.025, 0.97)))) #and this?
+  MCresults[[r]] <- biasOut
+}
+names(MCresults) <- paste("rho:", rho)
+MCresults <- lapply(MCresults, 
+                    function(x){
+                      rownames(x) <- c("bias in hat(beta)[0]", "bias in hat(beta)[1]")
+                      return(x)
+                      }
+                    )
+MCresults
+```
+
+What we can see from this particular Monte Carlo is that the constant term remains roughly unbiased, but there can be noticeable bias on the coefficient on $X_1$.
+More importantly the size and direction of the bias varies depending on how the omitted variable is related to the variable included.
+You'll cover this problem in more detail in 602
+
+## Exercises
+
+1. Create a function that takes a vector of numbers and returns the maximum.
+2. In this exercise you will use Gibbs sampling to estimate a Bayesian linear regression model.
+First, we will continue to assume that
+\[y|X, \beta, \sigma^2 \sim N(X\beta, \sigma^2 I). \]
+Since this is Bayesian we need to assume a prior distribution on $\beta$ and $\sigma^2$.
+The standard priors are from a diffuse uniform.
+
+    As you may recall we need to identify the conditionals of our parameters.
+    I'll spare you the details, but the distributions we want are (as you might guess)
+    $$\begin{aligned}
+    \beta| \sigma^2, y, X &\sim N\left( (X'X)^{-1}X'y, \sigma^2(X'X)^{-1}\right)\\
+    \sigma^2|\beta, y, X &\sim \text{Inv-}\chi^2\left(N-k, \frac{1}{N-k}(\hat{e}'\hat{e})\right),
+    \end{aligned}$$
+    where $\hat{e} = y-X[(X'X)^{-1}X'y].$
+
+    We will do this in steps:
+
+    a. Generate data where $y = X\beta + \varepsilon$, where $\varepsilon \sim N(0,\sigma^2)$. Set $\beta = (-1, 2, -2)$ and $\sigma^2= 4$.  Have $X$ be a matrix of a constant term and two random normal variables.  Set $N=2,000$.
+    b. Initialize a matrix of dimension $10,000 \times 4$, fill it with 0s.
+    c. Draw initial values for $\hat{\beta}$ from a uniform from $-100,000$ to $100,000$
+    d. Construct a for loop that runs for 10,000 iterations.  Each iteration $i$ should
+        - Take the last draw of $\beta$ and set it as the current value of $\beta$.
+        - Draw $\sigma^2_i$ from the inverse $\chi^2$ (you'll need `geoR::rinvchisq`).
+        - Draw $\beta_i$ from the multivariate normal (you'll need `MASS::mvrnorm`).
+        - Store the vector $(\beta_i, \sigma^2_i)$ in the matrix you previously initialized as row $i$.
+    e. When this is done running, take the resulting matrix and discard the first 5,000 rows.
+    f. Take the mean of each column, it should be about equal to the true value of $(\beta, \sigma^2)$.
+
+3. Recall that the OLS estimator is
+$$\hat{\beta} = (X' X ) ^{-1} X' y$$
+with variance estimator
+$$s^2 (X'X)^{-1}$$
+where $s^2= \dfrac{\hat{e}'\hat{e}}{(N-k)}$,  and $\hat{e} = y - X\hat{\beta}$.
+Now do the following
+
+    a. Your task is to create a function that takes 2 inputs `X` and `y` (`function(X, y)`) as inputs and returns a list containing  the OLS estimates, the variance matrix and the standard errors (Recall the standard errors are equal to the square root of the diagonal of the variance matrix). Note, you may have to use `as.vector` on `s` to avoid an error.
+    b. test this function on the data you generated in exercise 2.
+    c. Look up the function `pt` and edit your function from the last part to conduct a $t$ test  to see if each coefficient is statistically significant from 0. 
+    $$t = \frac{(\hat{\beta}-0)}{S.E.}$$ (Hint: In order to get the right $p$ value use the absolute value of the $t$ statistic, the upper tail of the $t$ distribution, and multiply your final answer by 2)
+
+4. Code the gradient for the normal MLE regression problem above.
+
+# Data Frames and tables
+Today we'll be focusing on one particular type of object, the data frame.
+Data frames in \R\ are used for data manipulation and data analysis because they offer a few advantages over the standard matrix, the advantages that they offer are:
+
+- Each column in a data frame can be of a different class (numeric, character, factor). All the columns in a matrix must be the same class (numeric, character).
+- Data frames can be merged together, the `merge` command doesn't work on matrices
+- Most canned regression models are designed to work with data frames rather than matrices
+- It's easier to extract individual variables out of a data frame
+
+Because data frames are pretty essential to most applications of \R\ we'll be doing a lot of specific applications. 
+Two common add-ons to data frames are data tables the tidyverse. We will briefly discuss these throughout, but our main focus will be on base \R\ data frames since they are the work horse. 
+You will at some point want to supplement your knowledge by using either tidyr or data tables (or both).
+
+
+## Reading data
+
+One advantage of \R\ over other statistical packages is that it has the ability to read many different kinds of data.
+The two standard read commands are for tab and comma separated data and they are `read.table` and `read.csv`, respectively.
+It's easy to save excel files into comma separated data (.csv), and I would recommend this over using tools explicitly designed for excel files.
+For many purposes the combination of `read.csv` will get you where you want to go however, there are lots of times when the data can only be obtained in Stata (.dta) or other proprietary formats.
+The `foreign` package allows for reading older Stata files only, but it does allow for SAS, SPSS, S+, minitab, .dbf files (GIS data is often in .dbf form) and other data formats, so you may also find that useful.
+
+
+For newer Stata files you can use either \verb@readstata13@ or \verb@haven@.
+Haven is part of the "tidyverse" which is a set of packages that form an easy and increasingly popular way to do things in \R.
+I also like \verb@data.tables@ as a faster alternative to the tidyverse. 
+For each thing today we'll talk about the base and tidy way to do things. I will eventually include the data table ways as an appendix to this chapter.
+
+
+The tidyverse has several packages for reading data \verb@haven@ for dta files, \verb@readr@ for most text data (csv, txt, tab),  and \verb@readxl@ package for excel-style files (xls and xlsx).
+To see these in action, we'll read in the data files that I sent you this morning.
+In addition to reading data from outside sources, many \R\ packages (including the base packages) come prepackaged with datasets which can be accessed using the \verb@data@ function
+
+
+In addition to reading data from outside sources, many \R\ packages (including the base packages) come prepackaged with datasets which can be accessed using the `data` function
+```{r}
+# Tidy packages
+library(dplyr)
+
+#Alternative 
+library(data.table)
+
+# for stata files (i like it better than haven)
+library(readstata13)
+##Notice that I use relative paths below. You should use the setwd()
+##command that we learned before to change your working directory to 
+##directory that contains the datasets folder **before** trying these examples
+
+
+##ordinary csv
+NMC <- read.csv('Datasets/NMC_Supplement_v4_0.csv')
+
+##stata dataset
+FL2003 <- read.dta13('Datasets/FearonLaitin_CivilWar2003.dta') 
+# A warning. Let's do what it says
+FL2003 <- read.dta13('Datasets/FearonLaitin_CivilWar2003.dta',
+                     nonint.factors=TRUE,
+                     convert.dates = FALSE) #annoying change in newer versions
+
+class(NMC)
+class(FL2003)
+```
+Notice that  the class here is `data.frame` which is what we're into.
+<!-- Also note, that `read_csv` includes some extra info about the file that's loaded.  -->
+<!-- We can suppress that with the option `show_col_types=FALSE`. -->
+<!-- Now we've read in the data we can take a look at it. -->
+Now we've read in the data we can take a look at it.
+
+## Commands to use on Data
+
+### Looking at the Variables
+Once we've read in the data we may wish to look at it.  This can be accomplished using the `View` command.
+This command opens up a new window where we can see the data just like we would using the browse command in Stata, there is also the command `fix` which is the equivalent of the edit command in Stata.
+```{r, eval=FALSE}
+View(NMC)
+fix(NMC)
+```
+There is also an easy way to just look at the first few observations of a data.frame.  This is helpful just to see what the variables look like without actually looking at the whole dataset.  This can be done using the `head` command.  Additionally, the command `summary` can be used to get a summary of each column in the data frame; we can also look at just the variable names using the command `colnames```
+```{r}
+head(FL2003) #Top  6
+tail(FL2003) #Last 6
+summary(FL2003[, 1:10]) ##Truncated the first 10 columns to save space
+colnames(FL2003) 
+```
+It's worth noting at this point that all of commands just mentioned work on matrices, and everything but `colnames` works on ordinary vectors.
+
+### Individual Variables
+\R\ treats data frames like a special version of a list.
+This means that to access individual elements we use the dollar sign.
+For example if we want just the summary of the `pop` variables in Fearon and Laitin we would type.
+```{r}
+summary(FL2003$pop)
+```
+We could also use numbers to index like with matrices
+```{r}
+summary(FL2003[,18]) ##But isn't the dollar sign easier?
+```
+Extracted variables are just vectors and so we can treat them as such
+```{r}
+## Doing vector stuff with variables
+FL2003$pop[1:10]
+head(log(FL2003$pop)) 
+```
+
+
+### Creating Subsets
+We can also use index to create subsets of data frames, for instance if we just wanted the COW codes and years we could do any of the following to create that subset.
+```{r}
+##These all do the same thing
+temp.dat <- FL2003[, c('ccode', 'year')]
+head(temp.dat)
+
+temp.dat <- FL2003[, c(53, 2)]
+head(temp.dat)
+
+
+temp.dat <- subset(FL2003, select=c('ccode', 'year'))
+head(temp.dat)
+
+## Tidy approach
+temp.dat <- FL2003 %>% 
+  select(ccode, year)
+head(temp.dat)
+
+## DT approach
+FL.dt <- data.table(FL2003) #need to convert first
+temp.dat <- FL.dt[,.(ccode, year)]
+head(temp.dat)
+```
+
+In general, `subset`, `select`, or the `data.table` approaches are probably better than any of the other alternatives depending on whether you like base, tidy, or data table ecosystems. 
+Take a second to look up `with`, it can be helpful with data frames when working in base.
+
+Note that we have introduced the tidy `%>%` function.
+This operator connects functions in the tidyverse. Instead of `f(g(x))` we write `x %>% g() %>% f()` which can make for more readable code as it goes in the order of operation.
+
+We can also subset based on rows
+```{r}
+##These all do the same thing
+temp.dat <- FL2003[FL2003$ccode ==2, ] ##Extract USA 
+head(temp.dat)
+
+temp.dat <- subset(FL2003, subset = ccode==2)
+head(temp.dat)
+
+#tidy
+temp.dat <- FL2003 %>% 
+  filter(ccode==2)
+head(temp.dat)
+
+# data table
+temp.dat <- FL.dt[ccode==2]
+head(temp.dat)
+```
+Note that `subset` is used in base for both rows and columns.
+If we pull up the help page on `subset` (`?subset`) we can see that the subset argument takes a logical expression (in this case `ccode==2`) for selecting rows that we want.
+The select argument takes column names for the columns that we want.
+We can use them to together
+```{r}
+temp.dat <- subset(FL2003, 
+                   subset = ccode==2, 
+                   select=c('year', 'polity2'))
+head(temp.dat)
+dim(temp.dat)
+
+
+#tidy approach
+temp.dat <- FL2003 %>% 
+  filter(ccode==2) %>% 
+  select(year,polity2)
+head(temp.dat)
+dim(temp.dat)
+
+# Data table
+temp.dat <- FL.dt[ccode==2, .(year, polity2)]
+head(temp.dat)
+dim(temp.dat)
+```
+
+
+
+<!-- \begin{note} -->
+<!-- I include the expression \texttt{!is.na(FL2003\$ccode)} as a precaution when we do indexing.   -->
+<!-- If we don't include this and there are NAs (Missing Values) in one of the variables we're indexing on, then \R\ has a problem processing it and we end up with lots of extra rows that are all NAs. This is another reason to prefer \texttt{subset} (or the tidy/data table approach) over indexing. -->
+<!-- \end{note} -->
+
+### Classes
+One thing you might have noticed when we ran `summary()` on the Fearon and Laitin data is that not all variables looked the same.  For instance if we run
+```{r}
+temp.df <- subset(FL2003, select=c(ccode, cname, region))
+summary(temp.df)
+lapply(temp.df, class) ##lapply because it's really a type of list
+```
+We can see that we have a numeric variable, a character variable, and a factor variable.
+In general, \R\ assigns these classes when we read the data, and most of the time it gets it right.
+Numeric and integer variables are variables that are all numbers. 
+These are ordinary variables, they can be either continuous (population) or discrete (year) and \R\ won't notice the difference.
+Everything we covered with numeric vectors last time works on these.
+Character variables are just strings.
+There's not too much special we can or would want to do with these.
+Factors, however, are an interesting construct.
+
+#### More on Factors
+
+Factors are how \R\ deals with categorical variables. 
+In the Fearon and Laitin example region is stored as a factor.  
+Running `summary` on a factor variable returns a table with a count of each category.
+```{r}
+summary(FL2003$region)
+head(FL2003$region) ##includes info about the levels
+
+levels(FL2003$region) ##Just want to know the levels
+nlevels(FL2003$region) ##Just want to the number of levels
+```
+The first level is always considered the reference level (and dropped in regression). Factors can be troublesome when manipulating data.
+To get around this you may sometimes want to convert factors to characters when doing any manipulation.
+For example if we want to subset the data to remove one level from a factor \R\ will do that but it won't drop that as a level, which can mess things up.
+
+```{r}
+temp.df <- subset(FL2003, region=='western democracies and japan')
+summary(temp.df$region) ##others still listed
+```
+We can tell \R\ to convert all factors to characters when we read in the data.
+Likewise \R\ sometimes messes up and creates factors where we don't want them (it will sometimes read a numeric or a character in as a factor).
+We can easily change  between classes. The only transformation we need to be careful with is with factors to numeric:
+```{r}
+FL2003 %>% 
+  select(pop) %>%
+  head()
+
+FL2003 %>% ##change from numeric to character
+  mutate(pop=as.character(pop)) %>%
+  select(pop) %>% 
+  head()
+
+
+FL2003 %>% ##change from numeric to character to factor
+  mutate(pop=as.character(pop),
+         pop=as.factor(pop)) %>%
+  select(pop) %>% 
+  head()
+
+FL2003 %>% ##change from numeric to character to factor to numeric
+  mutate(pop=as.character(pop),
+         pop=as.factor(pop),
+         pop=as.numeric(pop)) %>%
+  select(pop) %>% 
+  head() #WHOOPS
+
+
+##R numbers them by the level their in, 
+##so the first level (222) is converted to 1
+
+FL2003 %>% ##change from numeric to character to factor to numeric
+  mutate(pop=as.character(pop),
+         pop=as.factor(pop),
+         pop=as.character(pop),
+         pop=as.numeric(pop)) %>%
+  select(pop) %>% 
+  head() #What a relief
+
+```
+Useful transformations:
+\begin{table}[H]
+\centering
+\caption{Useful functions for Converting Objects}
+\begin{tabular}{rr}
+Function                  &   Use \\ \hline
+  \texttt{as.numeric}         &   Change a factor or character vector into numbers\\
+\texttt{as.character}       &   Change a numeric or factor vector into a character string\\
+\texttt{as.Date}            &   Change a character vector of dates in a Date object\\
+\texttt{as.factor}          &   Change a character or numeric vector in factor\\
+\texttt{as.matrix}      &   Change a vector or data frame into a matrix\\
+\texttt{as.data.frame}      &   Change a matrix into a data frame\\ \hline
+\end{tabular}
+\end{table}
+
+We've now also introduced `mutate` as the tidy tool for making variables.  More on this in a moment
+
+<!-- Note that `as.factor` and `factor` actually do the same thing, this is not generally true, but to make factors we can use either. -->
+<!-- ```{r} -->
+<!-- CNames <- as.factor(FL2003$cname) -->
+<!-- ##is the same as -->
+<!-- CNames <- factor(FL2003$cname) -->
+<!-- ``` -->
+The only benefits of using the latter is that there are more options.
+```{r}
+x <- 1:5
+factor(x)
+factor(x, levels = 1:10) ##Add extra levels that aren't in x
+factor(x, labels = c('blue', 
+                     'red', 
+                     'green', 
+                     'yellow', 
+                     'pink')) ##Relabel x
+```
+We'll do more with factors when we do analysis in the next session. They become more useful then.
+
+
+## Merging Data
+The `merge` function in \R\ is important enough to merit its own section, although it's relatively easy to do.
+The function takes two data.frames and joins them together based on one or more columns that the user supplies.  Let's start with a simple example.
+```{r}
+## Create two data frames
+temp.df <- data.frame(ccode= 1:5,
+                      Var1= rnorm(5))
+
+temp.df
+
+temp.df2 <- data.frame(ccode= 1:5,
+                       Var2 = runif(5))
+temp.df2
+
+temp.df3 <- merge(temp.df, 
+                  temp.df2,
+                  by='ccode') ##The variable we want to merge on
+
+temp.df3 ##Ta Da
+```
+A slightly more complicated example might be
+```{r}
+temp.df <- data.frame(cow.code= 1:5,
+                      Var1= rnorm(5))
+
+temp.df
+
+temp.df2 <- data.frame(ccode= 1:5,
+                       Var2 = runif(5))
+temp.df2
+
+##We want to merge of country codes, but they have different names
+##Not to fear
+temp.df3 <- merge(temp.df, 
+                  temp.df2,
+                  by.x='cow.code', ##.x refers to the 1st data.frame
+                  by.y='ccode')   ##.y refers to the 2nd
+
+temp.df3 ##Ta Da
+```
+An even more complex example
+```{r}
+###Data sets with different countries
+temp.df <- data.frame(cow.code= 1:10,
+                      Var1= rnorm(10))
+
+temp.df
+
+temp.df2 <- data.frame(ccode= c(1:5, 11:15),
+                       Var2 = runif(5))
+temp.df2
+
+##We want to merge of country codes, but they have different countries
+temp.df3 <- merge(temp.df, 
+                  temp.df2,
+                  by.x='cow.code',
+                  by.y='ccode')  
+
+temp.df3 ##Note it only contains overlapping countries
+
+##All the countries from just the first data.frame
+merge(temp.df, 
+      temp.df2,
+      by.x='cow.code',
+      by.y='ccode',
+      all.x=TRUE)
+
+##Same for the 2nd
+merge(temp.df, 
+      temp.df2,
+      by.x='cow.code',
+      by.y='ccode',
+      all.y=TRUE)
+
+##All from both
+merge(temp.df, 
+      temp.df2,
+      by.x='cow.code',
+      by.y='ccode',
+      all=TRUE)
+
+```
+We can turn to the real data to show that we can match on more than one variable.
+```{r}
+mergedData <- merge(FL2003,
+                     NMC,
+                     by=c('ccode', 'year'), ##Variables to match on
+                     all.x=TRUE) ##Keep all the values from FL2003 
+```
+More information on `merge` can be found in its help file. It's very flexible and very straight forward.
+There is a tidy alternative, but I like merge and think it works just fine.
+Data tables have their own `merge` function so everything above should work fine on both data tables and the tidy data frames.
+
+## Reshaping Data
+Sometimes we get data that need to be reshaped.  
+Some common examples are Freedom House or World Bank data which typically comes in a wide format. 
+The tidy form of this task involves pivot functions
+
+```{r}
+##Freedom House data on Freedom of the Press
+pressData <- read.csv('Datasets/Press_FH.csv') 
+
+##It has  a column for country names and then a bunch of years
+##We want to reshape it into a country year format
+colnames(pressData) 
+
+
+# Tidy approach
+library(tidyr)
+pressData <- read.csv('Datasets/Press_FH.csv') 
+pressData <- pressData %>%
+  pivot_longer(cols = !country, #colnames to swing around (everything but country)
+               names_to ='year', ##What to call column that is 
+               # now the old column names
+               names_prefix = "X", #removing prefix
+               values_to = 'press'  ) ##What to call column with the data
+head(pressData)
+
+
+#Melt is  the data table approach
+pressData <- fread('Datasets/Press_FH.csv')  #read a csv directly to a data table
+class(pressData)
+pressData <- melt(pressData,
+                  id.vars=c('country'), ##Variable to melt against
+                  variable.name='year', ##What to call the column names
+                  value.name = 'press' ##What to call the data 
+)
+head(pressData)
+```
+
+## Generating New Variables
+We may be in the situation of needing to create new variables that we want to add to our data frame.  
+In most cases this is pretty easy.
+For instance if we wanted might notice that the Fearon and Laitin data doesn't contain logged GDP per capita.
+To create that we could do the following
+```{r}
+###Creates and attaches the new variable to the data frame
+FL2003$log.gdpen <- log(FL2003$gdpen)
+
+
+# tidy
+FL2003 <- FL2003 %>% 
+  mutate(log.gdpen = log(gdpen))
+
+# data table
+FL.dt[,log.gdpen := log(gdpen)]
+```
+
+### Removing Variables
+
+Removing variables is also straight forward. We can do it one at a time or with the subset command.
+```{r}
+FL2003$random <- NULL ##Remove this variable
+
+
+##The %in% command is a logical function that takes two vectors and 
+##for each value of in the 1st vector it asks: 
+##Is this value in the 2nd vector?
+
+##Example of %in%  Returns 2 TRUE value
+colnames(FL2003) %in%  c('politycode', 'casename')
+
+
+# Tidy: start over
+FL2003 <- read.dta13("Datasets/FearonLaitin_CivilWar2003.dta", 
+                     convert.dates = FALSE,
+                     nonint.factors = TRUE)
+
+c('politycode', 'casename') %in% colnames(FL2003)
+
+FL2003 <- FL2003 %>% 
+  select(! c(politycode, casename))
+c('politycode', 'casename') %in% colnames(FL2003)
+
+
+# DT will use the null approach
+c('politycode', 'casename') %in% colnames(FL.dt)
+FL.dt[, `:=`(politycode=NULL, 
+             casename=NULL)] 
+c('politycode', 'casename') %in% colnames(FL.dt)
+# note with data tables the `:=`(...) syntax saves the results of 
+# what's inside the (...) 
+```
+We'll now look at some applications  of common data tasks.
+
+### APPLICATION: Generating Dummies
+Generating dummy variables is a common task and there lots of ways to do it.  First let's just look at a making a dummy for democracy
+```{r}
+##We can do it by indexing (not great)
+FL2003$demDummy <- FL2003$polity2 ##initalize it 
+FL2003$demDummy[FL2003$polity2 < 7] <- 0
+FL2003$demDummy[FL2003$polity2 >= 7] <- 1
+summary(FL2003$demDummy) 
+
+FL2003$demDummy <- NULL #erase it
+
+
+##There's a better way to do it
+FL2003$demDummy <- ifelse(FL2003$polity2 < 7, ##if condition
+                          0,  ##if TRUE, return 0
+                          1)  ##else return 1
+summary(FL2003$demDummy)
+FL2003$demDummy <- NULL
+
+
+##OR even
+FL2003$demDummy <- as.numeric(FL2003$polity2 >= 7)
+summary(FL2003$demDummy)
+FL2003$demDummy <- NULL
+##This last one generates TRUE and FALSE values, 
+##as.numeric converts them 1 and 0 respectively.
+
+
+# Tidy with ifelse
+FL2003  <- FL2003 %>% 
+  mutate(demDummy = ifelse(polity2 < 7 ,0,1))
+summary(FL2003$demDummy)
+
+
+# DT with ifelse
+FL.dt[, demDummy:= ifelse(polity2 < 7 ,0,1)]
+summary(FL.dt$demDummy)
+```
+The `ifelse` command rolls an if-then-else statement into one command.
+It's nice because we don't have to initialize the variable because there was no indexing required, and we can do it one command.
+
+We can also generate a whole set of dummies from a single variable (i.e. country or year dummies)
+```{r}
+#base R
+cDummies <- model.matrix(~factor(cname) - 1, data=FL2003)
+FullData <- cbind(FL2003, cDummies) 
+colnames(FullData)[c(1:10, 55:80)] ##Take a look
+
+# Tidy solution: hack pivot wider
+FullData <- FL2003 %>%
+  mutate(const=1) %>%
+  pivot_wider(names_from = cname, values_from = const, 
+              names_prefix = "cname_", values_fill = 0)
+colnames(FullData)[c(1:10, 55:80)] ##Take a look
+```
+The command `model.matrix` uses what's called a formula in \R.
+We'll go in to formulas more extensively when we start estimating models, but for now I'll note that the above command is an internal function that  \R\ uses when it's getting ready to create a matrix of variables whenever it runs a regression.
+We just borrowed it for making dummies.
+Formulas for regression take the form `y ~ X`.
+So the above formula has no dependent variable, country dummies as the only independent variables, and no constant (the -1 term).
+Including no constant means that it generated a dummy for all the countries (with a constant it would drop one).
+
+
+### APPLICATION: Generating a Lagged DV
+Another common task is creating lagged variables.
+We'll now take a look at a couple of ways to create a lagged variable. 
+There's not a good way base \R\ way that I know of to do this.
+We will wrap things within the `system.time({...})` command to show us how slow/fast these approaches are.
+```{r}
+# Tidy way
+system.time({
+FL2003 <- FL2003 %>% 
+  arrange(ccode, year) %>% #tell it this is a panel of country-years
+  group_by(ccode) %>%  #work within countries
+  mutate(laggedOnset = lag(onset))%>%#lag
+  ungroup() #weird things can happen otherwise
+summary(FL2003$laggedOnset)
+})
+# Did it work?
+FL2003 %>% 
+  filter(ccode==200 & year > 1965) %>%
+   select(cname, year, onset, laggedOnset) %>% 
+  head() 
+
+
+# Preferred way 2: Data Table (my most preferred)
+system.time({
+  FL2003 <- data.table(FL2003) #change type
+  setkey(FL2003, ccode, year) #arange the data 
+  FL2003[,laggedOnset2:=shift(onset, n=1, type="lag"), by=ccode]
+})
+with(FL2003, table(laggedOnset, laggedOnset2))
+
+
+
+```
+<!-- In the first approach we engage in an easy-to-read, but slow brute force method. We check every row to see how it relates to the previous row and generate the lag accordingly. -->
+<!-- With larger data sets, this will get prohibitively time consuming. -->
+
+<!-- In the second approach, we introduced `tapply` another member of the `apply` family. -->
+<!-- `tapply` takes three basic arguments which are similar to `apply`.  -->
+<!-- The first argument is the variable we want to do something to, in the first usage this was `onset`. -->
+<!-- The second argument asks us what the group variable is, in both usage we told it to go by country (`ccode`). -->
+<!-- The third argument is the function to apply to the variable. -->
+<!-- In this case, we used a function that we self-defined. -->
+<!-- First, we convert the object into a "zoo" time series using `as.zoo` and then we use `stats::lag` to the lag input.  Note we specifically tell \R\ that we want the `lag` function from the `stats` package. -->
+<!-- When we load `dplyr` there is a `dplyr::lag` which does not work with zoo objects. -->
+
+<!-- In the third approach, we use what's called a "tidy" approach. The tidy-verse is a whole set of \R\ packages that work well together and lots of people like them.  -->
+<!-- Many of your coauthors in the future will be tidy people, so this is a good thing to learn. -->
+<!-- In many ways it can make life very easy for you. -->
+<!-- The tidy approach is based on "pipes" denoted `%>%` and is designed to be read "in order." -->
+In the tidy  case, we start with a data frame `FL2003` then we arrange it by `ccode` and `year`, then we group by `ccode`, then we mutate the onset variable using the `lag` function to generate a new variable with our groups.
+This can be a little weird to look at at first, but lots of people find it intuitive with just a little practice.
+
+In the second (and faster) approach, we use a data table.
+This requires us to convert the data frame to a data table and then set the "keys" to arrange the data.
+The syntax of the final line is beyond our scope today, but if you want to know more, I can help.
+
+
+## APPLICATION: Aggregating or summarizing Data
+As a final application, there may be a situation where you have data that you want to aggregate in different ways.
+Here the tidy verse and data tables will be your friend.
+
+The thing to remember here: `mutate` is when you want a new variable the *same length as the input data* and `summarize` is when you want to aggregate to some level.
+```{r}
+###Generate some data####
+newDat <- data.frame(ccode=rep(1:5, each=10),
+                     year = rep(1:5, 10),
+                     Var1 = rnorm(50))
+## This is a data frame with 5 countries and five years
+## But each country-year has two observations.  
+## We want to aggregate to a sum for each country year
+
+#tidy
+system.time({
+  output <- newDat %>% 
+    group_by(ccode, year) %>% 
+    summarise(SumVar = sum(Var1)) %>%
+    ungroup()
+})
+output 
+ #can you figure out the difference between mutate and summarize?
+
+system.time({
+  # data table approach
+  newDt <- data.table(newDat)
+  out.dt <- newDt[, .(SumVar = sum(Var1)), ##New variable with definition
+                  by=list(ccode, year)] ##aggregate over these variables
+})
+all(output$SumVar==out.dt$SumVar)
+```
+
+## Writing Data
+Once we have our data all set we may want to save it.  All of the read functions we used to read have writing equivalents.
+```{r}
+write.csv(NMC, 'Datasets/NMC.csv')
+save(list=c('FL2003',
+            'NMC'),
+     file='Datasets/DataSets.rdata')
+save.image('Datasets/DataFrames.Rdata')
+```
+The write functions create individual data frame files that can be opened by excel or Stata, whereas the .Rdata files are specific to R and can contain any number of objects.
+Also, `save` lets you save specific objects, and `save.image` saves your entire workspace.
+```{r}
+ls() #Everything
+rm(list=ls())
+ls() #Nothing
+load('Datasets/DataFrames.Rdata')
+ls() #It's all back
+```
+
+## Exercises
+This was probably the hardest section to create notes for because when it comes to manipulating data there are so many different ways to do the same thing, and there are so many possible tasks that could come up.
+The only way to really get the hang of data manipulation in \R\ is to have a project where you do everything in \R.  
+
+1. This exercise focuses on read data and manipulating it.  In order to get the most out of it make sure that you're starting with an empty work space and no extra packages loaded.  Try to load only the packages you need.
+
+    a. Read in the Freedom House press data and the Fearon and Laitin data.
+    b. Reshape the FH data into country-year format. Make the year variable a numeric value with no leading "X". (If the "X" is giving you trouble look up `gsub`)
+    <!-- c. Load the `stringr` package and use the `?` function to look at the help file for the function `str_replace`.  We want to drop the `X` that is in front of all the years in the reshaped press data. (use `head` to look at the new data if you don't know what I mean.) (HINT: Replace the `X` with `""`).  Overwrite the year variable with the output from `str_replace`. -->
+    d. Install and load the package `countrycode`.  Use the command `?`  to figure out how to use the function `countrycode`. Make a variable called `ccode` in your press data that has COW country codes for each country.
+Look up any `NA`s that are returned and fill them in using the COW state list file (`states2016.csv`) in the datasets folder (HINT: only Serbia and Serbia and Montenergo need to be fixed).
+    e. Once you have that merge it with the Fearon and Laitin data by ccode and year.  Make sure that the number of rows in the merged data matches the number of rows in the original Fearon and Laitin data. Go back and see if you can solve any discrepancies or duplicates.
+    f. Find the average polity2 score by region.
+
+
+
+# Plotting
+Today we'll be looking at graphics in \R. \R\ has three major plotting systems: `base`, `lattice`, and `ggplot`. 
+All three do the same things and so we really only need to learn one. 
+Most of the grad students and other \R\ enthusiasts like to use `ggplot` because it produces nice looking plots, it's more consistent in syntax across difference type of plots than base graphics, and the options make more sense to me.
+To use `ggplot` we need to use the `ggplot2` library (part of the tidyverse). 
+We'll also use the `gridExtra` library to arrange multiple plots into a single figure.
+
+## Basic Plots
+Despite the good things about ggplot sometimes is nice to do some some basic, exploratory
+plots with base graphics.
+```{r}
+x <- -10:10
+y <- x^2
+plot(y~x)
+dat <- data.frame(x=x, y=y)
+with(dat, plot(y~x))
+```
+You can spice these up by using functions like `lines`,  `points`, `rug`, or `curve`.
+To get a fast histogram we can do this:
+```{r}
+x <- rnorm(1000)
+hist(x, freq=FALSE) #To get a true histogram set freq=FALSE
+```
+
+## Scatterplots and Layers
+We'll start with basic plots using data on the fuel economy of different cars.
+```{r}
+library(ggplot2)
+
+FE2013 <- read.csv("Datasets/FE2013.csv")
+colnames(FE2013) ##Take a look at the variables
+```
+
+`ggplot` relies on layers which are connected using the `+` sign (which acts similarly to the `%>%` operator, above).
+The first layer is created using the `ggplot` command on a data.frame.
+\begin{note}
+\texttt{ggplot} works best with data frame and data table objects.
+\end{note}
+```{r}
+plot1 <- ggplot(FE2013)
+plot1 ##It's blank
+```
+To create the scatterplot we need to add that layer to the plot
+```{r}
+plot1 <- ggplot(FE2013) +  ##Initial layer
+            geom_point(aes(x = FEhighway, y=FEcity))
+
+## geom_point is used to specify that we want a scatter plot
+## aes is used to specify the variables used in the plot
+
+print(plot1)
+```
+
+It's pretty straight forward to make changes to plot once it's created.  Say we wanted to add a title and change the axis labels.
+
+```{r}
+plot1 <- plot1 + ##Take plot1 and add
+          xlab('Miles per Gallon: Highway')+
+          ylab('Miles per Gallon: City')+
+          ggtitle('Fuel Economy')
+
+print(plot1)
+```
+We can add color to the plot by including a factor variable. In this case, let's color the observations by number of cylinders.
+```{r}
+FE2013$Cylinder <- factor(FE2013$Cylinder) ##Need to convert to a factor
+
+plot1 <- ggplot(FE2013) + ##Since we changed the data we need to start over
+          geom_point(aes(x=FEhighway, y  = FEcity, color= Cylinder))+
+          xlab('Miles per Gallon: Highway')+
+          ylab('Miles per Gallon: City')+
+          ggtitle('Fuel Economy')
+print(plot1)
+```
+```{r}
+##Can use different shapes in place of color
+plot1 <- plot1 + 
+          geom_point(aes(x=FEhighway, y  = FEcity, shape= Cylinder))
+
+print(plot1)
+```
+```{r}
+##Or sizes
+plot1 <- plot1 + 
+          geom_point(aes(x=FEhighway, y  = FEcity, size= Cylinder))
+print(plot1)
+```
+Alternatively we can adjust the color, shape, and size all the points if we do it within `geom_point` and outside `aes```
+```{r}
+plot1 <- ggplot(FE2013) + 
+          geom_point(aes(x=FEhighway, y  = FEcity), color="blue")+
+          xlab('Miles per Gallon: Highway')+
+          ylab('Miles per Gallon: City')+
+          ggtitle('Fuel Economy')
+print(plot1)
+```
+```{r}
+plot1 <- ggplot(FE2013) + 
+          geom_point(aes(x=FEhighway, y  = FEcity), size=3.5)+
+          xlab('Miles per Gallon: Highway')+
+          ylab('Miles per Gallon: City')+
+          ggtitle('Fuel Economy')
+print(plot1)
+```
+```{r}
+plot1 <- ggplot(FE2013) + 
+          geom_point(aes(x=FEhighway, y  = FEcity), pch=24)+
+          xlab('Miles per Gallon: Highway')+
+          ylab('Miles per Gallon: City')+
+          ggtitle('Fuel Economy')
+print(plot1)
+```
+
+
+We can also change the background theme and the font side.
+```{r}
+plot1 + 
+  theme_bw(20)
+##theme_bw changes the color theme, 
+##20 means 20pt font
+```
+```{r}
+##Also
+plot1 + 
+  theme_classic(20)
+```
+```{r}
+plot1 + 
+  theme_gray(20)
+```
+```{r}
+plot1 + 
+  theme_minimal(20)
+```
+
+For more information on shapes and colors that are available to `ggplot` see
+[`http://www.cookbook-r.com/Graphs/Shapes_and_line_types/`](http://www.cookbook-r.com/Graphs/Shapes_and_line_types/)
+and
+[`http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/`](http://www.cookbook-r.com/Graphs/Shapes_and_line_types/)
+
+## Adding addition geoms
+
+We can easily add more things to our plot. In this example we'll add a best fit line, an arbitrary line, and a rug plot.
+\begin{note}
+In this plot we will specify \texttt{aes} in the the initialization step, this specifies it as a global option.  In other words it's the same as entering into each geom individually.
+\end{note}
+```{r}
+plot2 <- ggplot(FE2013, aes(x=FEhighway, y=FEcity))+
+            geom_point()+ ##Since we used aes globally we don't need it here
+            geom_smooth(method='lm', size=1)+ ##best fit line, size 1
+            geom_abline(intercept=50, slope=-1, color='red', 
+                        size=2)+ ##line
+            geom_rug(sides='b')##just across the bottom
+print(plot2)
+```
+In theory we could keep adding on and on.
+
+## Special plots
+We'll now take a look at some other commonly used plots.  If you have the need for other types of plots I'd recommend looking at [`http://www.cookbook-r.com/Graphs/`](http://www.cookbook-r.com/Graphs/) first.  They have many wonderful example with code.
+
+### Histogram
+We'll start with histograms.
+```{r}
+plot3 <- ggplot(FE2013, aes(x=FEcombined))+ ##only need x for hist
+            geom_histogram(binwidth=1)
+
+##if you don't specify binwidth it chooses something, 
+##I specified it so you can see how
+print(plot3)
+```
+```{r}
+plot3 <- plot3 + 
+            geom_histogram(binwidth=1, 
+                           color='black', ##outline
+                           fill='white')+ ##Inside
+            ylab('Count')+
+            xlab('Miles per Gallon: Combined')
+print(plot3)
+```
+We can change counts in the histogram to density
+```{r}
+plot3 <- ggplot(FE2013, aes(x=FEcombined))+ ##only need x for hist
+            geom_histogram(binwidth=1, 
+                           color='black', ##outline
+                           fill='white', ##Inside
+                           aes(y=..density..))+##call aes again
+            ylab('Density')+
+            xlab('Miles per Gallon: Combined')
+
+
+print(plot3)
+```
+### Density
+We'll now look at density plots
+```{r}
+plot4 <- ggplot(FE2013, aes(x=FEcombined))+ ##only need x for hist
+            geom_density()+
+            ylab('Density')+
+            xlab('Miles per Gallon: Combined')+
+            ggtitle("Basic Density")
+
+print(plot4)
+```
+We can see that it matches by overlapping them
+```{r}
+plot4 <- plot3 + 
+          geom_density()+
+            ylab('Density')+
+            xlab('Miles per Gallon: Combined')+
+            ggtitle("Density + Hist.")
+
+print(plot4)
+```
+We can also do multiple densities at the same time
+```{r}
+plot5 <- ggplot(FE2013) + 
+          geom_density(aes(x=FEcity ,
+                           fill = "City",
+                           color= "City"), 
+                       alpha = 0.5)+
+          geom_density(aes(x=FEhighway ,
+                           fill = "Highway",
+                           color= "Highway"), 
+                       alpha = 0.5)+
+          ylab('Density')+
+          xlab('Miles per Gallon')+
+          ggtitle("Two Densities")+
+          guides(fill = guide_legend(title = 'Type'),
+                 color = guide_legend(title = 'Type'))##Change legend title
+print(plot5)
+```
+\begin{note}
+In the last example we specified fill and color as strings, and \texttt{ggplot} made the legend for us.  It is also possible to specify them as a variable (like we did with Cylinder above, and ggplot will still make the lenged for us.)
+\end{note}
+
+## Stacking Plots
+We can arrange multiple plots on a single page using the `gridExtra` package
+```{r}
+library(gridExtra)
+grid.arrange(plot3, plot4, plot5, ncol=2)
+```
+You may not like the look of this so we can adjust that bottom plot
+```{r}
+grid.arrange(arrangeGrob(plot3, plot4, nrow=1),
+             plot5,
+             nrow=2)
+```
+Here the `arrangeGrob` is being used to combine the first two plots into a single graphic object (or Grob) that is then stacked on top of the other.
+If you want to split a plot across a specific variable we can do that with the `facet_wrap` command
+```{r}
+plot1.faceted <- ggplot(FE2013) + ##Since we changed the data we need to start over
+          geom_point(aes(x=FEhighway, y  = FEcity, color= Cylinder))+
+          xlab('Miles per Gallon: Highway')+
+          ylab('Miles per Gallon: City')+
+          ggtitle('Fuel Economy')+
+  facet_wrap(~Cylinder,nrow = 2)
+print(plot1.faceted)
+```
+
+
+## Saving Plots
+To save individual plots you can do the following
+```{r}
+ggsave(plot4, file="plot4.pdf", height=4, width=6)
+```
+To save either individual or pages of plots you can use pdf
+```{r}
+pdf("plot4.pdf", height=4, width=6)
+plot4
+dev.off()
+pdf("FullPlots.pdf", height=10, width=15)
+grid.arrange(arrangeGrob(plot3, plot4, nrow=1),
+             plot5,
+             nrow=2)
+dev.off()
+```
+You don't have to save as .pdf, that's just want I always do because it's easy to use them
+for \LaTeX\ figures. You could save as .bmp, .jpeg, .png, or .tiff using the same approach. We'll
+return to plotting in the next chapter when we discuss how to plot the substantive effects
+from regression models.
+
+
+
+
+# Fitting models and other analysis
+Today we'll look at running statistical models in \R.  Today we'll cover everything from cross-tabs to MLE estimation in \R.  To start we'll take a look at 2 variable contingency tables and correlation coefficients.
+
+## Bivariate relationships
+We'll start by generating some related data.  Let's generate a 2 column matrix composed of draws from the Multivariate Normal, i.e.
+$$x \sim N\left(
+                  (0, 0), 
+                  \begin{bmatrix}
+                  1 & 0.4\\
+                  0.4 & 1
+                  \end{bmatrix}
+          \right)$$
+To do that we need to use the function `MASS::mvrnorm`          
+```{r}
+library(MASS)
+x <- mvrnorm(1000, ##number of draws
+             mu=c(0, 0), ##Mean vector
+             Sigma=matrix(c(1,  ##Var matrix
+                            0.4,
+                            0.4,
+                            1),
+                          nrow=2))
+
+head(x)
+
+##Should be about the same by construction
+var(x) ##Variance-Covariance matrix
+cor(x) ##Correlation matrix
+
+##If you just want the correlation coef.
+cor(x[,1], x[,2]) ##Pearson's rho
+
+```
+To do cross tabs we'll need to convert to categorical data.
+```{r}
+x[x>0] <- TRUE
+x[x<0] <- FALSE
+tab1 <- table(x[,1], x[,2])  ##Work great with factors
+tab1
+chisq.test(tab1)
+
+##Both methods can handle more than two variables
+x <- runif(1000)
+y <- rnorm(1000)
+z <- rpois(1000, lambda=1)
+
+cor(x, y)
+cor(cbind(x,y,z))
+
+x[x<1/3] <-0
+x[x>1/3 & x < 2/3] <- 0.5
+x[x>2/3] <- 1
+x <- factor(x, labels=c('Left',
+                        'Middle',
+                        'Right'))
+table(x)
+y <- ifelse(y>0, "Up", "down")
+table(y, x)
+chisq.test(table(y,x))
+```
+But setting that aside for now let's get into estimating models
+
+## OLS: lm
+For this section we'll read in two data sets.
+```{r}
+library(readstata13)
+FearonLaitin <- read.dta13("Datasets/FearonLaitin_CivilWar2003.dta",
+                           nonint.factors = TRUE,
+                           convert.dates = FALSE)
+Wages <- read.dta13("Datasets/wages_full_time.dta",
+                    nonint.factors = TRUE,
+                    convert.dates = FALSE)
+UNSC <- read.dta13("Datasets/KW_bare.dta",
+                   nonint.factors = TRUE,
+                   convert.dates = FALSE)
+##Check the var names
+colnames(FearonLaitin)
+colnames(Wages)
+colnames(UNSC)
+
+##and for demonstration purposes
+X <- cbind(1, rnorm(1000), rnorm(1000, 1, 2))
+b <- c(1, -2, 2)
+y <- X %*% b + rnorm(1000)
+```
+OLS in \R\ is done with the `lm` command.  The `lm` command has the following options
+
+  - **formula:**  The formulas takes the following form: `y ~ X1 + X2`. Where `Y` is the dependent variable and the `X`s are whatever independent variables we want to include in the model.  The tilde is used to separate them.  We can also include a ` -1 ` if we want to drop the constant term.
+  - **data:** An argument that tells \R\ what data frame we want to use.
+  - **subset"** An argument that takes logical statements.  It is used to restrict the model to a certain subset of the data.
+  - **weights:** If you want to specify weights (i.e. Weighted Least Squares) you can put the vector of weights here
+  - **model, x, y:**  These are arguments that tell \R\ you want it to also return the data used to fit the model. Specifying these can be useful for knowing which observations are used to fit the model.
+  
+To fit a model, we:
+```{r}
+##Ordinary model
+model1 <- lm(Wage~Male+Age, data=Wages) 
+
+##Run only on Males
+model2 <- lm(Wage~Age, data=Wages, subset=Male==1)
+summary(model1)
+summary(model2)
+
+##We can also make adjustments in the formula
+##Use I() to make most adjustments
+model3 <- lm(log(Wage)~Male + Age +I(Age^2), data=Wages) 
+summary(model3)
+
+##And create interactions
+model4 <- lm(log(Wage)~Male*Age, data=Wages) 
+summary(model4)
+
+## Interactions with no constituents
+model5 <- lm(log(Wage)~Male:Age, data=Wages) 
+summary(model5)
+```
+
+An `lm` object contains a bunch of information, use the `names` command to see what all it contains
+```{r}
+names(model1)
+
+model1$coefficients ##coefs
+head(model1$residuals)  ##residuals
+head(model1$fitted.values) ##XB
+head(model1$model) ##data used to fit the model
+model1$call ##Returns the command used to create it
+
+vcov(model1) ##returns Variance matrix of model
+
+model1 <- lm(formula = Wage ~ Male + Age, data = Wages, x=TRUE, y=TRUE)
+head(model1$x) ##X values used
+head(model1$y) ##y values used
+
+##Check results 
+##notice we can abbreviate elements of the lm
+summary(cbind(model1$x %*% model1$coef,
+              model1$fitted))
+summary(cbind(model1$y-model1$fitted,
+              model1$resid))
+
+##If the data is in matrix form then we still use the formula
+##Just not the data argument
+
+##We need -1 because we have our own constant
+summary(lm(y~X -1 ))  
+```
+
+To get fitted values with standard errors we can use the predict command.
+```{r}
+modelFit <- predict(model1, se.fit=TRUE)
+#This returns a list \hat{y} and s.e.(\hat{yat})
+
+#Create a profile of data that is of interest to us.
+profile <- data.frame(Male = 1,
+                      Age = seq(18, 80, length.out=15))
+fitted <- predict(model1, se.fit=TRUE, newdata=profile)
+fitted
+```
+
+The `predict` function can also return confidence or prediction intervals:
+```{r}
+predict(model1, interval = "confidence", newdata=profile)
+predict(model1, interval = "prediction", newdata=profile)
+```
+
+### Robust Standard Errors and Hypothesis Testing
+Suppose we wanted robust standard errors, there are actually a few ways to do this.  
+Most common is the following
+```{r}
+library(sandwich)
+library(lmtest)
+
+###sandwich::vcovHC returns the robust covariance matrix
+##use lmtest::coeftest to get the t test
+coeftest(model1, vcovHC)
+
+## Also can just give it a matrix (like from a bootstrap)
+coeftest(model1, vcovHC(model3))
+```
+\texttt{coeftest} is a great function where you can use new covariance matrices on your models.  
+
+
+The car package also offers a function for joint hypothesis testing
+```{r}
+library(car)
+summary(model3)
+
+##Same as the basic t-test
+linearHypothesis(model3, c("Age=0"))
+
+
+##Special test
+linearHypothesis(model3, c("Age=2"))
+
+##Test if they have the same coefficient
+linearHypothesis(model3, c("Age=I(Age^2)"))
+
+##Joint significance of Age
+linearHypothesis(model3, c("Age=0", "I(Age^2)=0"))
+
+##Full F test 
+linearHypothesis(model3, c("Age=0", "I(Age^2)=0", "Male=0"))
+
+###Can also test with robust errors
+linearHypothesis(model3, 
+                 c("Age=0", "I(Age^2)=0", "Male=0"),
+                 vcov=vcovHC) 
+
+## Also can just give it a matrix (like from a bootstrap)
+linearHypothesis(model3, 
+                 c("Age=0", "I(Age^2)=0", "Male=0"),
+                 vcov=vcovHC(model3)) 
+
+
+###In the same vein there's also a function for nested model testing###
+model6 <- lm(log(Wage)~Male , data=Wages) 
+
+##Same as joint Significance test on Age above 
+##This is an example of nested model testing
+waldtest(model3, model6)
+```
+
+### Fixed Effects and Clustered Errors
+To estimate fixed effects we have some options. The first is to use  dummies
+```{r}
+FEmodel1 <- lm(ln_totaid96~scmem+factor(ccode), data=UNSC)
+summary(FEmodel1)
+
+##This is an eyesore.  We can use plm 
+library(plm)
+
+
+FEmodel2 <- plm(ln_totaid96~scmem,
+                model="within", ##FE command
+                index=c("ccode", "year"), ##panel vars
+                data=UNSC)
+summary(FEmodel2)
+
+
+
+##Random effects
+REmodel1 <- plm(ln_totaid96~scmem,
+                model="random", ##RE command
+                index=c("ccode", "year"), ##panel vars
+                data=UNSC)
+
+summary(REmodel1)
+
+
+##Clustered errors
+
+#Fixed effects model SE clustered on country 
+clust <- vcovHC(FEmodel2, cluster="group")
+coeftest(FEmodel2, clust)
+
+#Or time
+clust2 <- vcovHC(FEmodel2, cluster="time")
+coeftest(FEmodel2, clust)
+
+#OR if you have an lm fit you can use sandwich::vcovCL
+pooled.model1 <- lm(ln_totaid96~scmem, data=UNSC)
+clust.pooled <- vcovCL(pooled.model1, cluster=UNSC$ccode)
+coeftest(pooled.model1, clust)
+
+
+##Can use LinearHypothesis with this new Variance matrix
+linearHypothesis(FEmodel2, "scmem=0", vcov=clust)
+linearHypothesis(pooled.model1, "scmem=0", vcov=clust.pooled)
+```
+
+### A smorgasbord of Regression Tests and Statistics
+Additional regression tests and statistics are listed here as a reference
+\begin{table}[H]
+\centering
+\caption{Additional Tools and Tests}
+\begin{tabular}{lll}
+Function         & Use                                                               & Package \\ \hline
+\texttt{t.test}         & Test if two samples drawn from normals with the same mean         & \texttt{stats}\\
+\texttt{wilcox.test}    & Test if two samples drawn from distribution with same mean        & \texttt{stats}\\
+\texttt{chisq.test}     & Pearson's chi square test for independence or goodness-of-fit     & \texttt{stats}\\
+\texttt{fisher.test}    & Fisher's exact test for independence in 2x2 tables                & \texttt{stats}\\
+\texttt{ks.test}        & Kolmogorov-Smirnov test for comparing distributions               & \texttt{stats}\\
+\texttt{aic}            & Returns the AIC of a model                                        & \texttt{stats}\\
+\texttt{bic}            & Returns the BIC of a model                                        & \texttt{stats}\\
+\texttt{vuongtest}      & Voung's test for (non-nested) model comparison                    & \texttt{nonnest2}\\
+\texttt{lrtest}         & Likelihood ratio  test for (nested) model comparison              & \texttt{lmtest}\\
+\texttt{linearHypothesis} & Wald test for (nested) model comparison                           & \texttt{car}\\
+\texttt{Box.test}       & Box-Pierce \& Ljung-Box tests for autocorrelation                 & \texttt{stats}\\
+\texttt{bptest}         & Breusch-Pagan test for heteroskedasticity                         & \texttt{lmtest}\\
+\texttt{dwtest}        & Durbin-Watson test for autocorrelation in Errors                   & \texttt{lmtest}\\
+\texttt{shapiro.test}  & Shapiro-Wilk test for normality                                    & \texttt{stats}\\ 
+ \hline
+
+\end{tabular}
+\end{table}
+
+## GLMs
+
+GLMs in \R\ are pretty straight forward and can be estimated using the `glm` function.
+These are models that you'll get to in 603, so for now just note that they're here if you need them.
+```{r}
+model11 <- glm(onset ~ ethfrac + relfrac, 
+              family=binomial, ##specify logit
+              data=FearonLaitin)
+summary(model11)
+
+names(model11)
+
+##Everything from lm carries over
+
+model12 <- glm(onset ~ ethfrac + relfrac + log(gdpen), 
+              family=binomial,
+              data=FearonLaitin)
+model13 <- glm(onset ~ ethfrac + relfrac+log(gdpen) + pop + I(pop^2),
+              data=FearonLaitin,
+              family=binomial, ##specify logit
+              x=TRUE, y=TRUE)
+
+##Subsetting
+model14 <- glm(onset ~ ethfrac + relfrac+log(gdpen),
+              data=FearonLaitin,
+              family=binomial, ##specify logit
+              x=TRUE, y=TRUE,
+              subset=!is.na(pop))
+
+##Check the fitted values
+##plogis is the CDF of the logistic distribution
+summary(cbind(plogis(model13$x %*% model13$coef),
+              model13$fitted.values))
+
+
+##Note that glms also have an option for convergence 
+model14$converged
+```
+
+GLMs can take any of the following models\\[12pt]
+\begin{center}
+\begin{tabular}{rl}
+Model  & \texttt{family=} \\ \hline
+logit  & \texttt{binomial}\\
+probit & \texttt{binomial(link="probit")}\\
+cloglog& \texttt{binomial(link="cloglog")}\\
+OLS    & \texttt{gaussian}\\
+Poisson& \texttt{poisson}\\
+gamma  & \texttt{Gamma}\\ \hline
+\end{tabular}
+\end{center}
+
+## Tabling Results
+Now that we have some models we may want to put them in tables so that we can put them in a paper.
+All of the functions that I know for this are convert \R\ output into either HTML or \LaTeX.  I don't know of an easy way to convert either to Word.  We'll look at 2 packages to convert \R\ to \LaTeX, although many others exist.
+
+### `xtable`
+The first tabling package we'll look at is `xtable`.
+```{r}
+library(xtable)
+xtable(model1)
+```
+Which in \LaTeX\ looks like
+```{r, results='asis'}
+xtable(model1)
+```
+Now we can customize this using built in arguments and using the `print` command.
+```{r}
+##Give the variables nice names
+names(model1$coefficients) <- c("Intercept", 
+                                "Ethnic Frac.", 
+                                "Religous Frac.")
+
+print(xtable(model1, 
+             caption="Fearon and Laitin Logit", 
+             label="tab:FL1",
+             align=c("rcccc"),
+             digits=2),
+      caption.placement="top",
+      table.placement="htb")
+
+
+####Print model 1 using robust standard errors
+robustModel1 <- coeftest(model1, vcovHC)
+robustModel1 <- coeftest(model1, vcovHC)[] 
+
+##For quirky reasons only the command with [] can be 
+##given to xtable
+##Note that using [] extracts just the matrix part of it
+
+xtable(robustModel1)
+
+
+```
+
+
+
+
+MANY  options exist to customize `xtable` output, and we could spend hours going over just different commands within `xtable`.  Take a look at help file by running `?print.xtable` and go to
+[http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf](http://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf) to see examples (with code) of customized `xtable` output.
+\par
+
+### `stargazer`
+There are a lot of times when we would prefer to view models side by side.  For this I like  `stargazer::stargazer` although `modelsummary` is becoming more popular.  Unlike `xtable` it works on a lot of canned models directly (to varying degrees of effectiveness so watch out).
+```{r}
+library(stargazer)
+stargazer(model2, model3, FEmodel2,
+          title="Trying Stargazer",
+          label="tab:Star",
+          ##It allows you to put nice names 
+          ##directly into the call
+          covariate.labels=c("Ethnic Frac.",
+                             "Religious Frac.",
+                             "log(GDP per capita)",
+                             "Population",
+                             "Population$^2$",
+                             "UNSC Member"),
+          ##nice names for the Dependent
+          ##Variables
+          dep.var.labels=c("Onset", "Foreign Aid"),
+          digits=2)
+
+```
+
+There is lots of customization available for `stargazer` output as well, which can all be found in the help file for the function.
+
+## Other Models and Where to Find Them
+\begin{table}[H]
+\centering
+\caption{Other Common Models and their  Packages}
+\label{models}
+\begin{tabular}{ll}
+Model                          &  Package \\ \hline
+Conditional Logit              &  \texttt{survival}\\
+Weibull, Exponential, Cox PH   &  \texttt{survival}\\
+Ordered Probit                 &  \texttt{MASS}\\
+Negative Binomial              &  \texttt{MASS}\\
+Multinomial Logit              &  \texttt{VGAM}\\
+Heckman Selection              &  \texttt{sampleSelection}\\
+GAMS                           &  \texttt{mgcv}\\ 
+ARIMA models                   &  \texttt{stats}\\
+Instrumental Regression        &  \texttt{ivreg}\\
+tobit                          &  \texttt{AER}\\
+Bayesian GLM                   &  \texttt{brm}\\
+\hline
+\end{tabular}
+\end{table}
+Other models can be estimated by maximizing a likelihood (using \texttt{optim}) or by Bayesian methods using something like Stan.
+
+## Plotting Results from Regression Models
+While these summary plots from the last chapter are interesting on their own, the real reason you want to learn to plot is to plot regression results.  So we'll look at some data on GRE scores and admission into grad school to look at some interesting ways to represent regression results graphically.
+```{r}
+##Data
+GREdat <- read.csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
+colnames(GREdat)
+```
+Suppose then we want to predict admission to grad school using GRE scores and the ranking of the candidate's undergraduate institution (4 pt scale). As I'm sure you can guess, that's exactly what's in the data we just read in. Our model then is
+```{r}
+admitMod <- glm(admit ~ gre  + factor(rank), 
+                data=GREdat,##data
+                family=binomial, ##
+                x=TRUE) ##We'll want the X matrix
+
+summary(admitMod)
+```
+
+
+### Continuous Variables
+Let's say we're first interesting in the effect that GRE score has on admission.  We first want to hold all the other variables constant.
+```{r}
+library(ggplot2)
+## A median student is from a rank 2 school
+# Vary gre score for predictions
+newdata <- data.frame(gre= seq(min(GREdat$gre),
+                               max(GREdat$gre),
+                               length.out=20),
+                      rank=median(GREdat$rank))
+predictions <- predict(admitMod, newdata=newdata, type="response", se.fit=TRUE)
+
+plottingData <- data.frame(fit = predictions$fit,
+                           hi = predictions$fit+1.96*predictions$se.fit,
+                           lo = predictions$fit-1.96*predictions$se.fit,
+                           GRE = newdata$gre)
+plottingData
+########plot it ########
+grePlot <- ggplot(plottingData)+
+              geom_line(aes(x=GRE, y=fit))+
+              geom_ribbon(aes(x=GRE, ymin=lo, max=hi), alpha=0.25)+
+              ylab("Fitted Probability")+
+              xlab("GRE")+
+              ggtitle("Predicting Admission using GRE scores")+
+              theme_bw(18)
+print(grePlot)
+```
+
+We can also examine how our GRE predictions change with rank
+```{r}
+newdata <- data.frame(gre= seq(min(GREdat$gre),
+                               max(GREdat$gre),
+                               length.out=20),
+                      rank=rep(1:4, each=20))
+predictions <- predict(admitMod, newdata=newdata, type="response", se.fit=TRUE)
+
+plottingData <- data.frame(fit = predictions$fit,
+                           hi = predictions$fit+1.96*predictions$se.fit,
+                           lo = predictions$fit-1.96*predictions$se.fit,
+                           GRE = newdata$gre, 
+                           Rank = factor(newdata$rank))
+
+
+
+grePlot2 <- ggplot(plottingData)+
+              geom_line(aes(x=GRE, 
+                            y=fit, 
+                            color=Rank))+
+              geom_ribbon(aes(x=GRE, 
+                              ymin=lo,
+                              max=hi,
+                              fill=Rank), alpha=0.25)+
+              ylab("Fitted Probability")+
+              xlab("GRE")+
+              ggtitle("Predicting Admission using GRE scores")+
+              theme_classic(18)
+print(grePlot2)
+```
+But we may say that there's too much overlap and we could split it into separate plots.  Either by creating four different plots or by using the facet option
+```{r, fig.width=10, fig.height=8}
+##Give better labels
+levels(plottingData$Rank) <- c("Rank: 1",
+                               "Rank: 2",
+                               "Rank: 3",
+                               "Rank: 4")
+
+ggplot(plottingData)+
+              geom_line(aes(x=GRE, 
+                            y=fit))+
+              geom_ribbon(aes(x=GRE, 
+                              ymin=lo,
+                              max=hi), alpha=0.25)+
+              facet_wrap(~Rank, ncol=2)+ ##Can specify columns
+              ylab("Fitted Probability")+
+              xlab("GRE")+
+              ggtitle("Predicting Admission using GRE scores")+
+              theme_classic(18)
+```
+
+### Categorical Variables
+However suppose we wanted to predict based on rank, holding GRE constant.
+```{r}
+newdata <- data.frame(gre= median(GREdat$gre),
+                      rank=rep(1:4))
+predictions <- predict(admitMod, newdata=newdata, type="response", se.fit=TRUE)
+
+plottingData <- data.frame(fit = predictions$fit,
+                           hi = predictions$fit+1.96*predictions$se.fit,
+                           lo = predictions$fit-1.96*predictions$se.fit,
+                           GRE = newdata$gre, 
+                           Rank = factor(newdata$rank))
+
+
+plottingData
+rankPlot <- ggplot(plottingData)+
+              geom_pointrange(aes(x=Rank,
+                                    y=fit,
+                                    ymin=lo,
+                                    ymax=hi),
+                              size=0.75)+
+              theme_grey(18)+
+              ylab('Fitted Probability')+
+              ggtitle('Effect of Ungraduate Rank on Graduate Admission')
+print(rankPlot)
+```
+
+
+
+ 
+
+
+
+\appendix
+# Answers to exeriences
+
+## Answers to chapter 1 exercises
+```{r, eval=FALSE}
+## Solution to problem 1.1 
+?rnorm
+```
+```{r}
+## Solution to problem 1.2
+X <- cbind(1, rnorm(1000, mean=1, sd=2), runif(1000))
+colMeans(X)
+apply(X, 2, sd)
+
+b <- c(-1,2,2)
+b[2] <- -2
+
+y <- X%*% b + rnorm(1000)
+```
+```{r, eval=FALSE}
+## Solutions to problem 1.3
+install.packages(c("readstata13", "data.table", "MASS",
+                   "tidyr", "dplyr", "ggplot2", "gridExtra",
+                   "lmtest", "car", "sandwich", "plm",
+                   "xtable", "stargazer"))
+```
+## Answers to chapter 2 exercises
+```{r}
+## Solution to problem 2.1
+my.max <- function(x){
+  maximum <- x[1]
+  for(i in 2:length(x)){
+    if(x[i] > maximum){
+      maximum <- x[i]
+    }
+  }
+  return(maximum)
+}
+```
+```{r}
+## Solution to problem 2.2 
+# install.packages("geoR")
+library(geoR)
+library(MASS)
+N <- 2000
+X <- cbind(1, rnorm(N), rnorm(N))
+b <- c(-1,2,-2)
+e <- rnorm(N, mean=0, sd=2)
+
+y <- X %*% b + e
+
+MCout <- matrix(0, 10000, 4)
+beta.i <- runif(3, -100000, 100000)
+mu <- solve(t(X) %*% X) %*% t(X) %*% y
+for(i in 1:10000){
+  b.input <- beta.i
+  s2 <- sum( (y-X%*%b.input)^2)/(2000-3)
+  sigma2.new <- rinvchisq(1,df=2000-3, scale= s2)
+  V <- sigma2.new*solve(t(X) %*% X)
+  beta.i <- mvrnorm(1, mu, V)
+  MCout[i,] <- c(beta.i, sigma2.new) 
+}
+
+MCout <- MCout[5001:10000,]
+colMeans(MCout) #estimates 
+
+# Solution to problem 2.3
+ols <- function(y,X){
+  N <- nrow(X)
+  k <- ncol(X)
+  b.hat <- solve(crossprod(X)) %*% crossprod(X,y)
+  s2 <- sum( (y-X%*%b.hat)^2)/(N-k)
+  var.beta <- s2*solve(crossprod(X))
+  output <- list(est = b.hat,
+                 se = sqrt(diag(var.beta)),
+                 Var = var.beta)
+  return(output)
+}
+ols(y, X)
+
+ols <- function(y,X){
+  N <- nrow(X)
+  k <- ncol(X)
+  b.hat <- solve(crossprod(X)) %*% crossprod(X,y)
+  s2 <- sum( (y-X%*%b.hat)^2)/(N-k)
+  var.beta <- s2*solve(crossprod(X))
+  se.bhat <- sqrt(diag(var.beta))
+  t <- b.hat/se.bhat
+  p <- pt(abs(t), lower.tail = FALSE, df=N-k)*2
+  output <- list(est = b.hat,
+                 se = se.bhat,
+                 Var = var.beta,
+                 p.values  = p)
+  return(output)
+}
+ols(y, X)
+
+# Solution to problem 2.4
+grNormalMLE <- function(theta, X,y){
+  lnsigma2 <- theta[length(theta)] 
+  sigma2 <- exp(lnsigma2)
+  beta <- theta[-length(theta)]
+  
+  dBeta <- (X * as.numeric(y-X%*%beta))/sigma2
+  dln.sigma2 <- (y- X%*%beta)^2 / (2*sigma2) - 1/2
+  D <- colSums(cbind(dBeta, dln.sigma2))
+  return(-D)
+}
+```
+
+## Answer to chapter 3 exercises
+```{r}
+# Solution to problem 3.1 
+library(tidyr)
+library(readstata13)
+library(stringr)
+library(countrycode)
+
+pressData <- read.csv('Datasets/Press_FH.csv') 
+FL <- read.dta13("Datasets/FearonLaitin_CivilWar2003.dta",
+                 nonint.factors = TRUE,
+                 convert.dates = FALSE)
+                 
+pressData <- pressData %>%
+  pivot_longer(cols = !country, #colnames to swing around (everything but country)
+               names_to ='year', ##What to call column that is 
+               # now the old column names
+               names_prefix = "X", #removing prefix
+               values_to = 'press'  ) %>% ##What to call column with the data
+  mutate(year=as.numeric(year),
+         ccode = countrycode(country, origin="country.name", destination="cown"),
+         ccode = ifelse(str_detect(country, "Serbia"), 345, ccode ))
+
+newData <- merge(FL, pressData, by=c("ccode", "year"), all.x=TRUE, all.y=FALSE)
+dim(newData)
+dim(FL)
+
+newData %>% 
+  select(ccode, year) %>%
+  filter(duplicated(.))
+# issues with West Germany (255 here should be 260), 
+# Serbia/Yugoslavia/Serbia & Montenegro triple counting 
+# Russia/Soviet Union double counting
+# Looking at the data, it becomes clear that if we just trash the NAs and fix West Germany 
+# We'll be good
+pressData <- pressData %>% 
+  mutate(ccode = ifelse(country=="Germany, West", 260, ccode),
+         press= ifelse(press=="N/A", NA, press)) %>%
+  na.omit()
+
+newData <- merge(FL, pressData, by=c("ccode", "year"), all.x=TRUE, all.y=FALSE)
+dim(newData)
+dim(FL)
+
+
+FL %>%
+  group_by(region) %>% 
+  summarise(Polity=mean(polity2, na.rm=TRUE))
+```
